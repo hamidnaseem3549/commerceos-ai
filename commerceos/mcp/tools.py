@@ -72,6 +72,28 @@ def get_order_by_id(order_id: str) -> dict | None:
     return result
 
 
+def get_orders_by_email(email: str) -> list[dict]:
+    session = get_session()
+    customers = session.query(Customer).filter(Customer.email == email.lower()).all()
+    if not customers:
+        session.close()
+        return []
+    customer_ids = [c.id for c in customers]
+    orders = session.query(Order).filter(Order.customer_id.in_(customer_ids)).all()
+    result = []
+    for o in orders:
+        items = session.query(OrderItem).filter(OrderItem.order_id == o.id).all()
+        result.append({
+            "order_id": o.id, "customer_name": customers[0].name,
+            "customer_email": email, "product_id": items[0].product_id if items else "",
+            "order_amount": o.total_amount, "quantity": sum(i.quantity for i in items) if items else 1,
+            "order_timestamp": str(o.created_at), "shipping_country": o.shipping_address,
+            "billing_country": o.billing_address, "status": o.status,
+        })
+    session.close()
+    return result
+
+
 def get_fraud_signals(order_id: str) -> dict | None:
     session = get_session()
     order = session.query(Order).filter(Order.id == order_id.upper()).first()
@@ -177,6 +199,7 @@ for _name, _func in [
     ("get_product_by_id", get_product_by_id), ("get_order_by_id", get_order_by_id),
     ("get_fraud_signals", get_fraud_signals),
     ("get_all_flagged_orders", get_all_flagged_orders),
+    ("get_orders_by_email", get_orders_by_email),
     ("append_order", append_order),
 ]:
     register_tool(_name, _func)

@@ -1,0 +1,24 @@
+# Core LangChain stack
+langchain>=0.3.0
+langchain-community>=0.3.0
+langchain-groq>=0.3.0
+langgraph>=0.4.0
+
+# Vector store & embeddings
+langchain-huggingface>=1.0.0
+langchain-chroma>=1.0.0
+chromadb>=1.3.5
+sentence-transformers>=3.0.0
+
+# CrewAI (standalone, no LangChain conflict)
+crewai>=0.105.0
+
+# UI & data
+streamlit>=1.40.0
+pandas>=2.0.0
+
+# Utilities
+python-dotenv>=1.0.0
+
+# ML (required by transformers/sentence-transformers)
+torchvision>=0.20.0

@@ -1,0 +1,21 @@
+product_id,product_name,category,price,stock_quantity,reorder_threshold
+P1001,Classic Cotton T-Shirt - Black,Apparel,14.99,120,30
+P1002,Classic Cotton T-Shirt - White,Apparel,14.99,8,30
+P1003,Slim Fit Denim Jeans,Apparel,49.99,45,20
+P1004,Wireless Bluetooth Headphones,Electronics,79.99,15,25
+P1005,USB-C Fast Charger 65W,Electronics,29.99,200,50
+P1006,Stainless Steel Water Bottle,Home & Living,19.99,5,40
+P1007,Leather Crossbody Bag,Accessories,89.99,12,15
+P1008,Running Shoes - Men,Footwear,69.99,60,25
+P1009,Running Shoes - Women,Footwear,69.99,3,25
+P1010,Yoga Mat - Premium,Sports & Fitness,34.99,80,20
+P1011,Smart Fitness Watch,Electronics,129.99,7,20
+P1012,Ceramic Coffee Mug Set,Home & Living,24.99,150,30
+P1013,Wireless Mouse,Electronics,19.99,2,40
+P1014,Backpack - 25L Travel,Accessories,54.99,33,15
+P1015,Sunglasses - Polarized,Accessories,39.99,0,20
+P1016,Bluetooth Speaker Portable,Electronics,44.99,18,25
+P1017,Cotton Bath Towel Set,Home & Living,29.99,95,25
+P1018,Men's Formal Shirt - Blue,Apparel,34.99,40,20
+P1019,Women's Summer Dress,Apparel,44.99,6,20
+P1020,Laptop Sleeve 15-inch,Accessories,22.99,55,20
