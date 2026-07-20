@@ -34,9 +34,18 @@ export default function ProductGrid() {
 
   useEffect(() => {
     setLoading(true);
-    getProducts({ category: activeCat || undefined, search: search || undefined })
-      .then((prods: any) => setProducts(Array.isArray(prods) ? prods : prods.products || []))
-      .catch(() => setProducts([]))
+    const params: Record<string, string> = {};
+    if (activeCat) params.category = activeCat;
+    if (search) params.search = search;
+    getProducts(params)
+      .then((prods: any) => {
+        console.log('Products loaded:', prods?.length);
+        setProducts(Array.isArray(prods) ? prods : prods?.products || [])
+      })
+      .catch((err: any) => {
+        console.error('Products error:', err);
+        setProducts([])
+      })
       .finally(() => setLoading(false));
   }, [activeCat, search]);
 

@@ -1,5 +1,3 @@
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-
 interface FetcherOptions {
   method?: string;
   body?: unknown;
@@ -7,10 +5,12 @@ interface FetcherOptions {
 }
 
 async function fetcher<T>(endpoint: string, opts: FetcherOptions = {}): Promise<T> {
-  const url = new URL(`${API_BASE}${endpoint}`);
-  if (opts.params) Object.entries(opts.params).forEach(([k, v]) => url.searchParams.set(k, v));
+  const params = new URLSearchParams(opts.params || {});
+  const qs = params.toString();
+  const hasQuery = endpoint.includes("?");
+  const url = qs ? `${endpoint}${hasQuery ? "&" : "?"}${qs}` : endpoint;
 
-  const res = await fetch(url.toString(), {
+  const res = await fetch(url, {
     method: opts.method || "GET",
     headers: { "Content-Type": "application/json" },
     body: opts.body ? JSON.stringify(opts.body) : undefined,
