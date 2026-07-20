@@ -13,3 +13,6 @@ AgentRegistry.register(OrderAgent())
 AgentRegistry.register(PricingAgent())
 
 __all__ = ["BaseAgent", "AgentResult", "AgentRegistry"]
+
+from commerceos.orchestration.workflows import register_event_handlers
+register_event_handlers()

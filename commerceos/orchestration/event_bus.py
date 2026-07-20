@@ -8,8 +8,15 @@ class EventBus:
     def __init__(self):
         self._listeners: dict[str, list[Callable]] = defaultdict(list)
 
-    def on(self, event_type: str, handler: Callable) -> None:
-        self._listeners[event_type].append(handler)
+    def on(self, event_type: str, handler: Callable | None = None) -> Callable | None:
+        if handler is not None:
+            self._listeners[event_type].append(handler)
+            return None
+        # Decorator mode: return a wrapper that registers the decorated function
+        def decorator(fn: Callable) -> Callable:
+            self._listeners[event_type].append(fn)
+            return fn
+        return decorator
 
     def emit(self, event_type: str, data: dict | None = None) -> None:
         data = data or {}
