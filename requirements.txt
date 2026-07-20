@@ -17,6 +17,9 @@ crewai>=0.105.0
 streamlit>=1.40.0
 pandas>=2.0.0
 
+# Database
+sqlalchemy>=2.0.0
+
 # Utilities
 python-dotenv>=1.0.0
 

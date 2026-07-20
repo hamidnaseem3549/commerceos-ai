@@ -1,10 +1,10 @@
 """Database connection management."""
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, scoped_session
+from sqlalchemy.orm import sessionmaker
 from commerceos.config import settings
 
 engine = create_engine(settings.database_url, echo=False)
-SessionLocal = scoped_session(sessionmaker(bind=engine))
+SessionFactory = sessionmaker(bind=engine)
 
 
 def init_db():
@@ -13,4 +13,5 @@ def init_db():
 
 
 def get_session():
-    return SessionLocal()
+    """Get a fresh database session. Caller must close()."""
+    return SessionFactory()

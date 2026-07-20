@@ -28,7 +28,7 @@ def _generate_tracking() -> str:
 class OrderAgent(BaseAgent):
     name = "order"
     description = "Manages order lifecycle — status, tracking, cancellation"
-    keywords = ["order status", "track my order", "cancel order", "where is my",
+    keywords = ["order status", "track my order", "cancel order", "where is my order",
                 "shipping", "tracking", "order update", "order details"]
 
     def run(self, query: str) -> AgentResult:

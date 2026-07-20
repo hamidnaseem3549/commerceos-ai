@@ -136,7 +136,27 @@ def get_all_flagged_orders() -> list[dict]:
     return flagged
 
 
-_next_order_num = [2016]
+_next_order_num = [2016]  # Will be auto-corrected on first call
+
+
+def _get_next_order_id() -> str:
+    """Get the next available order ID by checking the database."""
+    from commerceos.database.connection import get_session
+    from commerceos.database.models import Order as OrderModel
+    session = get_session()
+    try:
+        highest = session.query(OrderModel.id).order_by(OrderModel.id.desc()).first()
+        if highest and highest[0].startswith("O"):
+            num = int(highest[0][1:]) + 1
+            if num > _next_order_num[0]:
+                _next_order_num[0] = num
+    except Exception:
+        pass
+    finally:
+        session.close()
+    order_id = f"O{_next_order_num[0]}"
+    _next_order_num[0] += 1
+    return order_id
 
 
 def append_order(customer_name: str, customer_email: str, shipping_country: str,
@@ -158,8 +178,7 @@ def append_order(customer_name: str, customer_email: str, shipping_country: str,
             session.add(customer)
             session.flush()
 
-        order_id = f"O{_next_order_num[0]}"
-        _next_order_num[0] += 1
+        order_id = _get_next_order_id()
         total = round(product.price * quantity, 2)
         now = datetime.now(timezone.utc)
 
@@ -171,9 +190,11 @@ def append_order(customer_name: str, customer_email: str, shipping_country: str,
 
         session.add(OrderItem(order_id=order_id, product_id=product_id,
                               quantity=quantity, unit_price=product.price))
+        product_name = product.name  # Capture before session closes
         session.commit()
+        session.close()
 
-        # Emit event for auto-triggered workflows
+        # Emit event AFTER session close so event handlers get their own session
         if event_bus:
             try:
                 event_bus.emit("order.created", {
@@ -183,8 +204,6 @@ def append_order(customer_name: str, customer_email: str, shipping_country: str,
             except Exception:
                 pass
 
-        product_name = product.name
-        session.close()
         return {"order_id": order_id, "product_name": product_name, "total": total}
     except Exception as e:
         session.rollback()
