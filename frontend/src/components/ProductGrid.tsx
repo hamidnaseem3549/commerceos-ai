@@ -4,37 +4,40 @@ import { useState, useEffect } from "react";
 import { getProducts, getCategories, Product } from "@/lib/api";
 import { useCart } from "@/lib/cart";
 
-const CATEGORY_IMAGES: Record<string, string[]> = {
-  Apparel: [
-    "photo-1556909114-f6e7ad7d3136",
-    "photo-1556905055-8f358a7a47b2",
-    "photo-1490114538077-0a7f8cb49891",
-  ],
-  Electronics: [
-    "photo-1468495244123-6c6c332eeece",
-    "photo-1523275335684-37898b6baf30",
-    "photo-1505740420928-5e560c06d30e",
-  ],
-  Accessories: [
-    "photo-1491637639811-60e2756cc1c7",
-    "photo-1547996160-81dfa63595aa",
-    "photo-1524592094714-0f0654e20314",
-  ],
-  "Home & Living": [
-    "photo-1544457070-4cd773b4d71e",
-    "photo-1567225591450-0e5ec7ba0d4f",
-    "photo-1555041469-a586c61ea9bc",
-  ],
-  Footwear: [
-    "photo-1542291026-7eec264c27ff",
-    "photo-1608231387042-66d1773070a5",
-    "photo-1491553895911-0055eca6402d",
-  ],
-  "Sports & Fitness": [
-    "photo-1571019613454-1cb2f99b2d8b",
-    "photo-1534258938425-1efa0faf2d60",
-    "photo-1518611012118-696072aa579a",
-  ],
+const PRODUCT_IMAGES: Record<string, string> = {
+  P1001: "photo-1603252109303-2751441dd157",  // Classic Cotton T-Shirt - Black
+  P1002: "photo-1521572163474-6864f9cf17ab",  // Classic Cotton T-Shirt - White
+  P1003: "photo-1505740420928-5e560c06d30e",  // Wireless Bluetooth Headphones
+  P1004: "photo-1491637639811-60e2756cc1c7",  // Leather Weekend Duffle Bag
+  P1005: "photo-1602143407151-7111542de6e8",  // Stainless Steel Water Bottle
+  P1006: "photo-1556679343-c7306c1976bc",  // Organic Green Tea Set
+  P1007: "photo-1520903920243-00d872a2d2c2",  // Wool Blend Scarf - Charcoal
+  P1008: "photo-1542291026-7eec264c27ff",  // Running Shoes - Men's
+  P1009: "photo-1608231387042-66d1773070a5",  // Smart Watch
+  P1010: "photo-1622560480605-d83c853bc5c3",  // Canvas Backpack - Olive
+  P1011: "photo-1607301405390-d831c242f59d",  // Scented Soy Candle Set
+  P1012: "photo-1571019613454-1cb2f99b2d8b",  // Yoga Mat Premium
+  P1013: "photo-1551028719-00167b16eac5",  // Denim Jacket - Classic Fit
+  P1014: "photo-1583394293214-28ded15ee548",  // Wireless Charging Pad
+  P1015: "photo-1524592094714-0f0654e20314",  // Sunglasses - Aviator
+  P1016: "photo-1523275335684-37898b6baf30",  // Cashmere Beanie
+  P1017: "photo-1608043152269-423dbba4e7e1",  // Portable Bluetooth Speaker
+  P1018: "photo-1620799140408-edc6dcb6d1ef",  // Laptop Sleeve 13 inch
+  P1019: "photo-1593030761757-71fae45fa0e7",  // Essentials Hoodie - Grey
+  P1020: "photo-1553062407-98eeb64c6a62",  // Leather Belt - Brown
+};
+
+const PRODUCT_COLORS: Record<string, string> = {
+  P1001: "from-gray-800 to-gray-900", P1002: "from-gray-100 to-gray-200",
+  P1003: "from-indigo-500 to-indigo-700", P1004: "from-amber-700 to-amber-900",
+  P1005: "from-cyan-400 to-cyan-600", P1006: "from-emerald-400 to-emerald-600",
+  P1007: "from-gray-500 to-gray-700", P1008: "from-red-500 to-red-700",
+  P1009: "from-purple-500 to-purple-700", P1010: "from-green-700 to-green-900",
+  P1011: "from-yellow-400 to-yellow-600", P1012: "from-teal-400 to-teal-600",
+  P1013: "from-blue-600 to-blue-800", P1014: "from-gray-700 to-gray-900",
+  P1015: "from-orange-400 to-orange-600", P1016: "from-violet-500 to-violet-700",
+  P1017: "from-pink-500 to-pink-700", P1018: "from-sky-500 to-sky-700",
+  P1019: "from-stone-400 to-stone-600", P1020: "from-amber-600 to-amber-800",
 };
 
 const FALLBACK_COLORS = [
@@ -44,14 +47,18 @@ const FALLBACK_COLORS = [
 ];
 
 function getProductImage(product: Product): string {
-  const images = CATEGORY_IMAGES[product.category] || CATEGORY_IMAGES.Apparel;
-  const index = parseInt(product.product_id.replace("P", "")) % images.length;
-  return `https://images.unsplash.com/${images[index]}?w=600&h=600&fit=crop&q=80`;
+  const photoId = PRODUCT_IMAGES[product.product_id];
+  if (photoId) return `https://images.unsplash.com/${photoId}?w=600&h=600&fit=crop&q=80`;
+  return `https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&h=600&fit=crop&q=80`;
+}
+
+function getColor(product: Product, index: number): string {
+  return PRODUCT_COLORS[product.product_id] || FALLBACK_COLORS[index % FALLBACK_COLORS.length];
 }
 
 function ProductCard({ product, index, onAdd }: { product: Product; index: number; onAdd: (p: Product) => void }) {
   const [imgError, setImgError] = useState(false);
-  const color = FALLBACK_COLORS[index % FALLBACK_COLORS.length];
+  const color = getColor(product, index);
   const initials = product.product_name.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase();
 
   return (
