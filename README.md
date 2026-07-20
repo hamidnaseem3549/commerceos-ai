@@ -1,162 +1,145 @@
-# CommerceOS AI
+# CommerceOS AI 🛍️
 
-**Autonomous Multi-Agent E-commerce Operations System**
+[![Python](https://img.shields.io/badge/Python-3.13-blue)]()
+[![Streamlit](https://img.shields.io/badge/Streamlit-1.40-red)]()
+[![LangGraph](https://img.shields.io/badge/LangGraph-0.4-green)]()
+[![CrewAI](https://img.shields.io/badge/CrewAI-0.105-orange)]()
 
-CommerceOS AI is a multi-agent system powering both a real storefront and an
-autonomous operations layer. A LangGraph Supervisor (with session memory)
-reads incoming messages and routes them to the right specialist agent —
-Customer Support, Inventory, or Fraud Detection — instead of running a fixed
-pipeline. Each agent uses the framework best suited to its actual job, not
-frameworks added for their own sake.
+**Autonomous multi-agent e-commerce operations system** — five AI agents collaborate to run a full e-commerce storefront. Order management, fraud detection, inventory control, customer support, and dynamic pricing — all powered by a LangGraph supervisor, CrewAI analysis pipeline, and event-driven agent collaboration.
 
-## Architecture
+## ✨ Features
+
+- **5 Specialist Agents** — Support (RAG), Inventory, Fraud (CrewAI 2-role), Order Management, Pricing
+- **Event-Driven Collaboration** — Place an order → auto-triggers fraud analysis + inventory deduction + stock alerts
+- **Persistent Database** — SQLite via SQLAlchemy ORM (data survives restarts)
+- **Admin Dashboard** — Real-time fraud alerts, stock overview, agent activity log, quick actions
+- **Professional Storefront** — Product images, category filters, sale badges, full cart checkout
+- **One-Command Deploy** — `docker compose up` boots the full stack
+- **Observability** — Every agent action is logged and visible in the admin panel
+
+## 🏗️ Architecture
 
 ```
-                     STREAMLIT STOREFRONT
-        (Browse Products | Cart & Checkout | AI Assistant)
-                              |
-                              v
-            LANGGRAPH SUPERVISOR (MemorySaver checkpointer)
-         reads query + session history -> routes to one agent
-                              |
-       +----------------------+----------------------+
-       |                      |                       |
-       v                      v                       v
- SUPPORT AGENT          INVENTORY AGENT           FRAUD AGENT
- LangChain + RAG        MCP tool calls            CrewAI (2 roles):
- (ChromaDB, grounded     (live stock lookup        Signal Analyst ->
- in real policy text)    + reasoning)               Risk Adjudicator
-       |                      |                       |
-       +----------------------+----------------------+
-                              |
-                              v
-                  MCP TOOL LAYER (shared data access)
-            products.csv | orders.csv | refund_policy.txt
+┌─────────────────────────────────────────────────┐
+│              STREAMLIT STOREFRONT                │
+│  Browse → Cart → Checkout → AI Assistant        │
+│  Order History → Admin Dashboard                │
+└───────────────────────┬─────────────────────────┘
+                        │
+┌───────────────────────▼─────────────────────────┐
+│            LANGGRAPH SUPERVISOR                  │
+│     AgentRegistry routing + MemorySaver          │
+└───┬──────┬──────┬──────┬──────┬─────────────────┘
+    │      │      │      │      │
+┌───▼──┐ ┌─▼──┐ ┌─▼──┐ ┌▼───┐ ┌▼──────┐
+│Supp. │ │Inv.│ │Frau│ │Order│ │Pricing│
+│(RAG) │ │LLM │ │Crew│ │LLM │ │LLM    │
+└──────┘ └────┘ └────┘ └────┘ └───────┘
+    │      │      │      │      │
+┌───▼──────▼──────▼──────▼──────▼──────────────┐
+│           MCP TOOL LAYER (SQLAlchemy)          │
+│  Products │ Orders │ Customers │ AgentLog      │
+└───────────────────────┬────────────────────────┘
+                        │
+┌───────────────────────▼────────────────────────┐
+│              EVENT BUS + WORKFLOWS              │
+│   order.created → fraud check + inventory ded. │
+└─────────────────────────────────────────────────┘
 ```
 
-## Why each framework is there (no redundant stacking)
+## 🚀 Quick Start
 
-- **LangGraph + MemorySaver**: orchestration spine. Routes each query via a
-  conditional edge, and remembers session history (via a checkpointer +
-  thread_id) so later queries in the same session have context from earlier
-  ones.
-- **LangChain + RAG/ChromaDB**: grounds Support Agent answers in the actual
-  refund policy text instead of letting the LLM guess.
-- **CrewAI**: used specifically where two-step structured reasoning adds
-  real value — fraud decisions benefit from a Signal Analyst (objectively
-  reads the data) followed by a Risk Adjudicator (makes the final call based
-  on that interpretation). This is genuine multi-agent collaboration, not a
-  routing decision.
-- **MCP tool layer**: all data access (products, orders, fraud signals) goes
-  through a single shared tool registry (`mcp_server/tools.py`) instead of
-  each agent independently reading CSVs. This implements MCP's tool-calling
-  *pattern* locally — built so it could later be swapped for a real networked
-  MCP server transport without changing any agent logic.
-- **AutoGen was evaluated and intentionally not used** — its strength
-  (open-ended multi-agent dialogue) overlaps with what CrewAI already does
-  here, and adding both would mean two frameworks doing the same job rather
-  than each having a distinct purpose.
+```bash
+# Option 1: Docker (recommended — one command)
+docker compose -f infrastructure/docker-compose.yml up
 
-## Project Structure
+# Option 2: Manual
+python -m venv venv
+source venv/Scripts/activate  # or venv\Scripts\activate on Windows
+pip install -r requirements.txt
+python scripts/seed.py
+streamlit run app.py
+```
+
+## 🤖 Agents
+
+| Agent | Framework | What It Does |
+|---|---|---|
+| **Support** | LangChain + RAG | Policy questions, order lookups, cross-agent queries |
+| **Inventory** | LangChain | Stock checks, low-stock alerts, reorder monitoring |
+| **Fraud** | CrewAI (2-role) | Signal Analyst → Risk Adjudicator sequential pipeline |
+| **Order** | LangChain | Order lifecycle, tracking numbers, cancellations |
+| **Pricing** | LangChain | Sale suggestions, slow-moving inventory analysis |
+
+## ⚡ Event-Driven Workflows
+
+```
+Order Placed
+  → Fraud Agent auto-checks (CrewAI analysis)
+  → Inventory deducted from stock
+  → Low-stock alert if threshold hit
+  → Order status: pending → confirmed
+  → AgentLog records every step
+  → Admin Dashboard displays all results
+```
+
+## 📊 Pages
+
+| Page | Purpose |
+|---|---|
+| **Home** | Product grid with category filters, sale badges, search |
+| **Cart & Checkout** | Full cart, quantity adjustment, order summary, checkout |
+| **AI Assistant** | Chat interface to all 5 agents with example buttons |
+| **Order History** | Look up orders by email, view status and fraud results |
+| **Admin Dashboard** | Operations control: fraud alerts, stock overview, agent log, quick actions |
+
+## 🧪 Testing
+
+```bash
+pytest tests/ -v
+```
+
+## 🛠️ Tech Stack
+
+- **Runtime:** Python 3.13, Streamlit
+- **Agents:** LangGraph, LangChain (+ RAG), CrewAI
+- **Database:** SQLAlchemy ORM + SQLite
+- **LLM Provider:** Groq API (free tier)
+- **Infrastructure:** Docker, docker-compose
+- **CI:** GitHub Actions (pytest on push)
+
+## 📁 Project Structure
 
 ```
 commerceos-ai/
-├── data/
-│   ├── products.csv          # product catalog with stock levels
-│   ├── orders.csv            # order history (includes planted fraud patterns)
-│   ├── refund_policy.txt     # store policy used for RAG
-│   └── chroma_store/         # generated automatically — the vector database
-├── agents/
-│   ├── support_agent.py      # LangChain + RAG
-│   ├── inventory_agent.py    # MCP tool calls + LLM reasoning
-│   └── fraud_agent.py        # CrewAI 2-role crew
-├── mcp_server/
-│   └── tools.py               # shared MCP-pattern tool registry
-├── rag/
-│   └── vectorstore_setup.py
-├── pages/
-│   ├── 1_Cart_Checkout.py     # storefront cart/checkout
-│   └── 2_AI_Assistant.py      # CommerceOS AI control panel
-├── supervisor.py               # LangGraph routing brain (with memory)
-├── app.py                      # Streamlit storefront home page
-├── requirements.txt
-└── README.md
+├── commerceos/              # Engine package (all business logic)
+│   ├── agents/              # 5 pluggable AI agents (BaseAgent pattern)
+│   ├── orchestration/       # LangGraph supervisor + EventBus + workflows
+│   ├── mcp/                 # MCP tool layer (data access via SQLAlchemy)
+│   ├── database/            # SQLAlchemy models + connection + seeding
+│   └── observability/       # Structured logging + activity tracking
+├── pages/                   # Streamlit page views (thin — no business logic)
+├── ui/                      # Shared UI components, styling, product images
+├── infrastructure/          # Docker deployment
+├── tests/                   # Test suite (15+ tests)
+├── rag/                     # RAG vectorstore for support agent
+├── data/                    # CSV seeds + runtime SQLite DB
+├── scripts/                 # CLI utilities
+├── docs/                    # Architecture docs + design specs
+└── .env.example             # API key template (copy to .env)
 ```
 
-## Setup Instructions
+## 🔒 Important Notes
 
-### 1. Create a virtual environment
-```bash
-python -m venv venv
-# Windows:
-venv\Scripts\activate
-# Mac/Linux:
-source venv/bin/activate
-```
+- Get a free Groq API key at https://console.groq.com
+- Copy `.env.example` to `.env` and add your key
+- Run `python scripts/seed.py` once to populate the database from CSVs
+- The admin dashboard uses password `admin123` (change in production)
+- All data is stored in `data/commerceos.db` — delete to reset
 
-### 2. Install dependencies
-```bash
-pip install -r requirements.txt
-```
-Note: this installs CrewAI in addition to the LangChain/LangGraph stack —
-expect this step to take a few minutes.
+## 🗺️ Roadmap
 
-### 3. Get a Groq API key and set up your .env file
-Go to https://console.groq.com, create a free account, and generate an API key.
-
-Create a `.env` file in the project root (copy `.env.example` and rename it),
-then add your real key:
-```
-GROQ_API_KEY=your_actual_key_here
-```
-
-### 4. Build the vectorstore (run ONCE)
-```bash
-python rag/vectorstore_setup.py
-```
-
-### 5. Test each agent individually (recommended before running the full app)
-```bash
-python agents/support_agent.py
-python agents/inventory_agent.py
-python agents/fraud_agent.py
-```
-
-### 6. Test the full Supervisor routing (including memory)
-```bash
-python supervisor.py
-```
-This runs two queries in the same session — the second one should show
-the system using context from the first.
-
-### 7. Run the storefront
-```bash
-streamlit run app.py
-```
-This opens the storefront home page. Use the sidebar to navigate to
-**Cart & Checkout** or the **AI Assistant** panel.
-
-## Example Queries to Try (in the AI Assistant page)
-
-- "Where is my order O2001?" → routes to **Support Agent**
-- "Can I return earrings I bought?" → routes to **Support Agent**
-- "Do we have the white t-shirt in stock?" → routes to **Inventory Agent**
-- "What products need restocking?" → routes to **Inventory Agent**
-- "Check order O2004 for fraud" → routes to **Fraud Agent** (watch the
-  transparency log — you'll see the Signal Analyst's interpretation feed
-  into the Risk Adjudicator's final decision)
-
-## Roadmap (Phase 2 — Not Yet Built)
-
-- Pricing Optimization Agent (dynamic pricing based on demand)
-- Reporting Agent (daily cross-agent operational summary)
-- ML-based fraud scoring layered on top of current rule-based signals
-- Real MCP server transport (currently the tool-calling pattern only,
-  implemented locally rather than over a networked protocol)
-- Cross-agent shared memory beyond a single session (e.g. persisting
-  flagged-customer context across separate visits, not just one session)
-
-## Tech Stack
-
-LangChain, LangGraph (+ MemorySaver), ChromaDB (RAG), CrewAI, Groq API,
-Streamlit, pandas
+- Real MCP server transport (SSE-based)
+- ML-based fraud scoring on top of rule-based signals
+- Cross-agent shared memory across sessions
+- PostgreSQL support for horizontal scaling

@@ -1,0 +1,14 @@
+[project]
+name = "commerceos-ai"
+version = "0.2.0"
+description = "Autonomous multi-agent e-commerce operations system"
+requires-python = ">=3.11"
+readme = "README.md"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.backends._legacy:_Backend"

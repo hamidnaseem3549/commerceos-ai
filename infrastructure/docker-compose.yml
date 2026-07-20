@@ -1,0 +1,16 @@
+services:
+  commerceos:
+    build:
+      context: ..
+      dockerfile: infrastructure/Dockerfile
+    ports:
+      - "8501:8501"
+    volumes:
+      - commerceos_data:/app/data
+    env_file:
+      - ../.env
+    command: >
+      sh -c "cd /app && python scripts/seed.py && streamlit run app.py --server.port=8501 --server.address=0.0.0.0"
+
+volumes:
+  commerceos_data:
