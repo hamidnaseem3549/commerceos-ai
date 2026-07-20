@@ -4,29 +4,7 @@ import { useState, useEffect } from "react";
 import { getProducts, getCategories, Product } from "@/lib/api";
 import { useCart } from "@/lib/cart";
 
-const PRODUCT_IMAGES: Record<string, string> = {
-  P1001: "photo-1603252109303-2751441dd157",  // Classic Cotton T-Shirt - Black
-  P1002: "photo-1521572163474-6864f9cf17ab",  // Classic Cotton T-Shirt - White
-  P1003: "photo-1505740420928-5e560c06d30e",  // Wireless Bluetooth Headphones
-  P1004: "photo-1491637639811-60e2756cc1c7",  // Leather Weekend Duffle Bag
-  P1005: "photo-1602143407151-7111542de6e8",  // Stainless Steel Water Bottle
-  P1006: "photo-1556679343-c7306c1976bc",  // Organic Green Tea Set
-  P1007: "photo-1520903920243-00d872a2d2c2",  // Wool Blend Scarf - Charcoal
-  P1008: "photo-1542291026-7eec264c27ff",  // Running Shoes - Men's
-  P1009: "photo-1608231387042-66d1773070a5",  // Smart Watch
-  P1010: "photo-1622560480605-d83c853bc5c3",  // Canvas Backpack - Olive
-  P1011: "photo-1607301405390-d831c242f59d",  // Scented Soy Candle Set
-  P1012: "photo-1571019613454-1cb2f99b2d8b",  // Yoga Mat Premium
-  P1013: "photo-1551028719-00167b16eac5",  // Denim Jacket - Classic Fit
-  P1014: "photo-1583394293214-28ded15ee548",  // Wireless Charging Pad
-  P1015: "photo-1524592094714-0f0654e20314",  // Sunglasses - Aviator
-  P1016: "photo-1523275335684-37898b6baf30",  // Cashmere Beanie
-  P1017: "photo-1608043152269-423dbba4e7e1",  // Portable Bluetooth Speaker
-  P1018: "photo-1620799140408-edc6dcb6d1ef",  // Laptop Sleeve 13 inch
-  P1019: "photo-1593030761757-71fae45fa0e7",  // Essentials Hoodie - Grey
-  P1020: "photo-1553062407-98eeb64c6a62",  // Leather Belt - Brown
-};
-
+// Each product has a unique gradient color — clean, premium, SSENSE-style look
 const PRODUCT_COLORS: Record<string, string> = {
   P1001: "from-gray-800 to-gray-900", P1002: "from-gray-100 to-gray-200",
   P1003: "from-indigo-500 to-indigo-700", P1004: "from-amber-700 to-amber-900",
@@ -40,48 +18,24 @@ const PRODUCT_COLORS: Record<string, string> = {
   P1019: "from-stone-400 to-stone-600", P1020: "from-amber-600 to-amber-800",
 };
 
-const FALLBACK_COLORS = [
-  "from-brand-100 to-brand-200", "from-blue-100 to-blue-200",
-  "from-purple-100 to-purple-200", "from-green-100 to-green-200",
-  "from-yellow-100 to-yellow-200", "from-pink-100 to-pink-200",
-];
-
-function getProductImage(product: Product): string {
-  const photoId = PRODUCT_IMAGES[product.product_id];
-  if (photoId) return `https://images.unsplash.com/${photoId}?w=600&h=600&fit=crop&q=80`;
-  return `https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&h=600&fit=crop&q=80`;
+function getProductImage(_product: Product): null {
+  return null;
 }
 
-function getColor(product: Product, index: number): string {
-  return PRODUCT_COLORS[product.product_id] || FALLBACK_COLORS[index % FALLBACK_COLORS.length];
+function getColor(product: Product): string {
+  return PRODUCT_COLORS[product.product_id] || "from-brand-100 to-brand-200";
 }
 
-function ProductCard({ product, index, onAdd }: { product: Product; index: number; onAdd: (p: Product) => void }) {
-  const [imgError, setImgError] = useState(false);
-  const color = getColor(product, index);
+function ProductCard({ product, onAdd }: { product: Product; onAdd: (p: Product) => void }) {
+  const color = getColor(product);
   const initials = product.product_name.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase();
 
   return (
     <div className="glass-card overflow-hidden group">
-      {/* Image */}
-      <div className="aspect-square relative overflow-hidden bg-gray-100">
-        {!imgError ? (
-          <img
-            src={getProductImage(product)}
-            alt={product.product_name}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-            loading="lazy"
-            onError={() => setImgError(true)}
-          />
-        ) : (
-          <div className={`w-full h-full bg-gradient-to-br ${color} flex items-center justify-center`}>
-            <span className="text-4xl font-black text-white/80 select-none">{initials}</span>
-          </div>
-        )}
+      <div className={`aspect-square relative overflow-hidden bg-gradient-to-br ${color} flex items-center justify-center`}>
+        <span className="text-5xl font-black text-white/20 select-none group-hover:scale-110 transition-transform duration-500">{initials}</span>
         {product.is_on_sale && (
-          <span className="absolute top-3 left-3 bg-orange-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg animate-pulse-slow">
-            SALE
-          </span>
+          <span className="absolute top-3 left-3 bg-orange-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg animate-pulse-slow">SALE</span>
         )}
         {product.stock_quantity === 0 && (
           <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
@@ -188,8 +142,8 @@ export default function ProductGrid() {
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {products.map((product, i) => (
-            <ProductCard key={product.product_id} product={product} index={i} onAdd={addItem} />
+          {products.map((product) => (
+            <ProductCard key={product.product_id} product={product} onAdd={addItem} />
           ))}
         </div>
       )}
