@@ -5,3 +5,18 @@ __pycache__/
 data/chroma_store/
 data/commerceos.db
 *.db
+
+# Node.js
+node_modules/
+.next/
+npm-debug.log*
+
+# Python
+*.egg-info/
+dist/
+build/
+
+# IDE
+.vscode/
+.idea/
+*.swp

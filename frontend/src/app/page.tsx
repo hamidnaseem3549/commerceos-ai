@@ -1,12 +1,10 @@
 "use client";
 
-import { CartProvider } from "@/lib/cart";
 import ProductGrid from "@/components/ProductGrid";
 
 export default function HomePage() {
   return (
-    <CartProvider>
-      <div className="space-y-8">
+    <div className="space-y-8">
         {/* Hero */}
         <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-dark-100 via-dark-200 to-brand-700 p-8 sm:p-12">
           <div className="relative z-10 max-w-2xl">
@@ -43,8 +41,7 @@ export default function HomePage() {
             <span className="text-sm text-gray-400">AI-powered recommendations</span>
           </div>
           <ProductGrid />
-        </div>
       </div>
-    </CartProvider>
+    </div>
   );
 }
