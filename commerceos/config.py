@@ -7,7 +7,7 @@ load_dotenv()
 
 class Settings:
     groq_api_key: str = os.getenv("GROQ_API_KEY", "")
-    llm_model: str = os.getenv("LLM_MODEL", "qwen/qwen3-32b")
+    llm_model: str = os.getenv("LLM_MODEL", "llama-3.3-70b-versatile")
     fraud_llm_model: str = os.getenv("FRAUD_LLM_MODEL", "llama-3.3-70b-versatile")
     llm_temperature: float = float(os.getenv("LLM_TEMPERATURE", "0.3"))
     database_url: str = os.getenv("DATABASE_URL", "sqlite:///data/commerceos.db")
