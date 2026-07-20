@@ -17,7 +17,8 @@ def _prewarm_engine():
     from rag.vectorstore_setup import load_vectorstore
     load_vectorstore()
     from langchain_groq import ChatGroq
-    llm = ChatGroq(model="qwen/qwen3-32b", temperature=0)
+    from commerceos.config import settings
+    llm = ChatGroq(model=settings.llm_model, temperature=0)
     llm.invoke("Say 'ready' in one word.")
     return True
 
