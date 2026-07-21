@@ -18,35 +18,16 @@ const PRODUCT_COLORS: Record<string, string> = {
   P1019: "from-stone-400 to-stone-600", P1020: "from-amber-600 to-amber-800",
 };
 
-function getProductImage(product: Product): string {
-  return `https://picsum.photos/seed/${product.product_id}/600/600`;
-}
-
-function getColor(product: Product): string {
-  return PRODUCT_COLORS[product.product_id] || "from-brand-100 to-brand-200";
-}
-
 function ProductCard({ product, onAdd }: { product: Product; onAdd: (p: Product) => void }) {
-  const [imgError, setImgError] = useState(false);
-  const color = getColor(product);
-  const initials = product.product_name.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase();
-
   return (
     <div className="glass-card overflow-hidden group">
-      <div className="aspect-square relative overflow-hidden bg-gray-100">
-        {!imgError ? (
-          <img
-            src={getProductImage(product)}
-            alt={product.product_name}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-            loading="lazy"
-            onError={() => setImgError(true)}
-          />
-        ) : (
-          <div className={`w-full h-full bg-gradient-to-br ${color} flex items-center justify-center`}>
-            <span className="text-5xl font-black text-white/80 select-none">{initials}</span>
-          </div>
-        )}
+      <div className="aspect-square relative overflow-hidden bg-gray-50">
+        <img
+          src={`/images/${product.product_id.toLowerCase()}.svg`}
+          alt={product.product_name}
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          loading="lazy"
+        />
         {product.is_on_sale && (
           <span className="absolute top-3 left-3 bg-orange-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg animate-pulse-slow">SALE</span>
         )}
