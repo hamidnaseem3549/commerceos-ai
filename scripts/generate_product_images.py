@@ -4,28 +4,28 @@ import os, sys
 OUTPUT_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "frontend", "public", "images")
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-# Each product: (name, color, icon-emoji)
+# Each product: (id, name, color, icon-emoji) — MUST match database exactly
 PRODUCTS = [
     ("P1001", "Classic Cotton T-Shirt - Black", "#2d2d2d", "👕"),
-    ("P1002", "Classic Cotton T-Shirt - White", "#e8e8e8", "👕"),
-    ("P1003", "Wireless Bluetooth Headphones", "#1a237e", "🎧"),
-    ("P1004", "Leather Weekend Duffle Bag", "#8d6e63", "👜"),
-    ("P1005", "Stainless Steel Water Bottle", "#00acc1", "🧴"),
-    ("P1006", "Organic Green Tea Set", "#2e7d32", "🍵"),
-    ("P1007", "Wool Blend Scarf - Charcoal", "#546e7a", "🧣"),
-    ("P1008", "Running Shoes - Men's", "#c62828", "👟"),
-    ("P1009", "Smart Watch Series 3", "#283593", "⌚"),
-    ("P1010", "Canvas Backpack - Olive", "#558b2f", "🎒"),
-    ("P1011", "Scented Soy Candle Set", "#f57f17", "🕯️"),
-    ("P1012", "Yoga Mat Premium", "#00695c", "🧘"),
-    ("P1013", "Denim Jacket - Classic Fit", "#1565c0", "🧥"),
-    ("P1014", "Wireless Charging Pad", "#37474f", "📱"),
-    ("P1015", "Leather Belt - Brown", "#795548", "🔗"),
-    ("P1016", "Sunglasses - Aviator", "#263238", "🕶️"),
-    ("P1017", "Cashmere Beanie", "#6a1b9a", "🧢"),
-    ("P1018", "Portable Bluetooth Speaker", "#e65100", "🔊"),
-    ("P1019", "Laptop Sleeve - 13 inch", "#455a64", "💻"),
-    ("P1020", "Essentials Hoodie - Grey", "#78909c", "👚"),
+    ("P1002", "Classic Cotton T-Shirt - White", "#e0e0e0", "👕"),
+    ("P1003", "Slim Fit Denim Jeans", "#1565c0", "👖"),
+    ("P1004", "Wireless Bluetooth Headphones", "#1a237e", "🎧"),
+    ("P1005", "USB-C Fast Charger 65W", "#37474f", "🔌"),
+    ("P1006", "Stainless Steel Water Bottle", "#00acc1", "🧴"),
+    ("P1007", "Leather Crossbody Bag", "#8d6e63", "👜"),
+    ("P1008", "Running Shoes - Men", "#c62828", "👟"),
+    ("P1009", "Running Shoes - Women", "#e91e63", "👟"),
+    ("P1010", "Yoga Mat - Premium", "#00695c", "🧘"),
+    ("P1011", "Smart Fitness Watch", "#283593", "⌚"),
+    ("P1012", "Ceramic Coffee Mug Set", "#f57f17", "☕"),
+    ("P1013", "Wireless Mouse", "#546e7a", "🖱️"),
+    ("P1014", "Backpack - 25L Travel", "#558b2f", "🎒"),
+    ("P1015", "Sunglasses - Polarized", "#263238", "🕶️"),
+    ("P1016", "Bluetooth Speaker Portable", "#e65100", "🔊"),
+    ("P1017", "Cotton Bath Towel Set", "#78909c", "🛁"),
+    ("P1018", "Men's Formal Shirt - Blue", "#1565c0", "👔"),
+    ("P1019", "Women's Summer Dress", "#e91e63", "👗"),
+    ("P1020", "Laptop Sleeve 15-inch", "#455a64", "💻"),
 ]
 
 
