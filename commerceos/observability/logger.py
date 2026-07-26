@@ -1,13 +1,13 @@
 """Structured logging."""
-import sys
 import json
 import logging
-from datetime import datetime, timezone
+import sys
+from datetime import UTC, datetime
 
 
 class StructuredFormatter(logging.Formatter):
     def format(self, record: logging.LogRecord) -> str:
-        entry = {"timestamp": datetime.now(timezone.utc).isoformat(),
+        entry = {"timestamp": datetime.now(UTC).isoformat(),
                  "level": record.levelname, "logger": record.name,
                  "message": record.getMessage()}
         for attr in ("agent", "action"):
@@ -17,6 +17,15 @@ class StructuredFormatter(logging.Formatter):
 
 
 def get_logger(name: str) -> logging.Logger:
+    """Get or create a structured JSON logger.
+
+    Args:
+        name: Logger name (typically ``__name__``).
+
+    Returns:
+        A ``logging.Logger`` instance that outputs JSON-formatted
+        log lines to stdout.
+    """
     logger = logging.getLogger(name)
     if not logger.handlers:
         handler = logging.StreamHandler(sys.stdout)

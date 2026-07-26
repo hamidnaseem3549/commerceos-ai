@@ -7,6 +7,13 @@ from commerceos.mcp.registry import get_tool, register_tool
 
 
 def get_all_products() -> list[dict]:
+    """Fetch all products from the database.
+
+    Returns:
+        list[dict]: Each product dict contains product_id, product_name,
+        category, price, stock_quantity, reorder_threshold, image_url,
+        is_on_sale, sale_price.
+    """
     session = get_session()
     products = session.query(Product).all()
     result = [{"product_id": p.id, "product_name": p.name, "category": p.category,
@@ -18,6 +25,14 @@ def get_all_products() -> list[dict]:
 
 
 def search_products(query: str) -> list[dict]:
+    """Search products by keyword matching against product names.
+
+    Args:
+        query: Space-separated search terms.
+
+    Returns:
+        list[dict]: Matching products (empty list if none match).
+    """
     session = get_session()
     products = session.query(Product).all()
     words = query.lower().split()
@@ -33,6 +48,12 @@ def search_products(query: str) -> list[dict]:
 
 
 def get_low_stock_products() -> list[dict]:
+    """Return products where stock is at or below reorder threshold.
+
+    Returns:
+        list[dict]: Low-stock products with product_id, product_name,
+        stock_quantity, reorder_threshold.
+    """
     session = get_session()
     products = session.query(Product).filter(Product.stock_quantity <= Product.reorder_threshold).all()
     result = [{"product_id": p.id, "product_name": p.name, "stock_quantity": p.stock_quantity,
@@ -42,6 +63,14 @@ def get_low_stock_products() -> list[dict]:
 
 
 def get_product_by_id(product_id: str) -> dict | None:
+    """Fetch a single product by its ID.
+
+    Args:
+        product_id: e.g. ``"P1001"``.
+
+    Returns:
+        Product dict, or ``None`` if not found.
+    """
     session = get_session()
     p = session.query(Product).filter(Product.id == product_id).first()
     if not p:
@@ -56,6 +85,14 @@ def get_product_by_id(product_id: str) -> dict | None:
 
 
 def get_order_by_id(order_id: str) -> dict | None:
+    """Fetch a single order by its ID.
+
+    Args:
+        order_id: e.g. ``"O2001"``.
+
+    Returns:
+        Order dict with customer and item details, or ``None``.
+    """
     session = get_session()
     o = session.query(Order).filter(Order.id == order_id.upper()).first()
     if not o:
@@ -74,6 +111,14 @@ def get_order_by_id(order_id: str) -> dict | None:
 
 
 def get_orders_by_email(email: str) -> list[dict]:
+    """Fetch all orders for a given customer email.
+
+    Args:
+        email: Customer email address.
+
+    Returns:
+        list[dict]: Orders for this customer (empty if none found).
+    """
     session = get_session()
     customers = session.query(Customer).filter(Customer.email == email.lower()).all()
     if not customers:
@@ -96,6 +141,18 @@ def get_orders_by_email(email: str) -> list[dict]:
 
 
 def get_fraud_signals(order_id: str) -> dict | None:
+    """Evaluate fraud signals for a specific order.
+
+    Checks: order velocity, country mismatch, new-account high-value,
+    and disposable email. An order scores 0-4 signals.
+
+    Args:
+        order_id: e.g. ``"O2004"``.
+
+    Returns:
+        Dict with signal breakdown and ``total_flags`` count, or
+        ``None`` if the order is not found.
+    """
     session = get_session()
     order = session.query(Order).filter(Order.id == order_id.upper()).first()
     if not order:
@@ -126,6 +183,14 @@ def get_fraud_signals(order_id: str) -> dict | None:
 
 
 def get_all_flagged_orders() -> list[dict]:
+    """Return all orders with 2+ fraud signals.
+
+    Used by the fraud sweep feature in the admin dashboard and
+    by the Fraud Agent for bulk analysis.
+
+    Returns:
+        list[dict]: Flagged order signal data.
+    """
     session = get_session()
     orders = session.query(Order).all()
     flagged = []
@@ -161,6 +226,23 @@ def _get_next_order_id() -> str:
 
 def append_order(customer_name: str, customer_email: str, shipping_country: str,
                  product_id: str, quantity: int = 1) -> dict:
+    """Place a new order and emit ``order.created`` event.
+
+    Creates the customer if they don't exist, deducts nothing yet
+    (event handlers handle inventory), and returns the new order details.
+    The event bus triggers fraud check + inventory deduction + alerts.
+
+    Args:
+        customer_name: Full name of the customer.
+        customer_email: Email address (looked up or created).
+        shipping_country: Destination country.
+        product_id: SKU being ordered.
+        quantity: Number of units.
+
+    Returns:
+        Dict with ``order_id``, ``product_name``, and ``total``,
+        or ``{"error": "..."}`` on failure.
+    """
     try:
         from commerceos.orchestration.event_bus import event_bus
     except ImportError:

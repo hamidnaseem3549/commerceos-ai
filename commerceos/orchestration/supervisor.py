@@ -114,6 +114,20 @@ commerceos_graph = build_graph()
 
 
 def handle_query(user_query: str, thread_id: str = "default-session") -> dict:
+    """Route a user query through the LangGraph supervisor.
+
+    The supervisor first checks keyword routing via ``AgentRegistry``,
+    then falls back to an LLM for ambiguous queries. The selected agent
+    runs and its result is returned.
+
+    Args:
+        user_query: The raw text from the user.
+        thread_id: Session identifier for MemorySaver continuity.
+
+    Returns:
+        A dict with keys: ``user_query``, ``route``, ``agent_name``,
+        ``answer``, ``ops_alert``, ``context_used``, ``history``.
+    """
     if not user_query or not user_query.strip():
         return {"user_query": "", "route": "", "agent_name": "System",
                 "answer": "Please type a question.", "ops_alert": "",
