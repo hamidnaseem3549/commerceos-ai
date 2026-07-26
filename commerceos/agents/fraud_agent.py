@@ -1,4 +1,6 @@
 """Fraud detection agent — CrewAI 2-role sequential crew."""
+import logging
+
 import crewai.llms.cache as _crew_cache
 
 _crew_cache.mark_cache_breakpoint = lambda msg: msg
@@ -7,6 +9,8 @@ from crewai import LLM, Agent, Crew, Process, Task
 from commerceos.agents.base import AgentResult, BaseAgent
 from commerceos.config import settings
 from commerceos.mcp.tools import call_tool
+
+_logger = logging.getLogger(__name__)
 
 groq_llm = LLM(model=f"groq/{settings.fraud_llm_model}", temperature=0.2)
 
@@ -65,8 +69,8 @@ class FraudAgent(BaseAgent):
                     session.add(alert)
                     session.commit()
                     session.close()
-                except Exception:  # noqa: BLE001, S110
-                    pass
+                except Exception as e:  # noqa: BLE001
+                    _logger.warning("Failed to persist fraud alert for %s: %s", order_id, e)
 
             return AgentResult(answer=report, agent="Fraud Detection Agent (CrewAI)",
                                ops_alert=report if "REJECT" in report else "",
