@@ -20,12 +20,10 @@
   <br/>
 </div>
 
-<!-- 
-  🎯 RECOMMENDED: Add a hero screenshot here — the storefront homepage
-  Capture: http://localhost:3000 with products visible
-  Place in: docs/images/hero.png
-  Use: <img src="docs/images/hero.png" alt="CommerceOS AI Storefront" width="800"/>
--->
+<!-- Hero screenshot -->
+<p align="center">
+  <img src="docs/images/01-storefront.png" alt="CommerceOS AI Storefront" width="90%"/>
+</p>
 
 ---
 
@@ -48,37 +46,81 @@ CommerceOS AI is an **autonomous, event-driven e-commerce platform** where **fiv
 
 ---
 
-## 👀 Demo Preview
+## 👀 See It In Action — A Complete AI Shopping Journey
 
-<!-- 
-  📸 SCREENSHOTS TO ADD (take these from your running app):
-  
-  1. Hero: Storefront homepage with products → docs/images/hero.png
-  2. Chat: AI Assistant with agent response → docs/images/chat.png
-  3. Admin: Admin dashboard with fraud alerts → docs/images/admin.png
-  4. Workflow: Cart → Checkout flow → docs/images/checkout.png
--->
+Watch how all 5 agents collaborate through a real customer conversation:
 
-<div align="center">
-  <table>
-    <tr>
-      <td width="50%"><strong>🏠 Storefront</strong><br/><em>Browse products with AI-powered recommendations</em><br/>
-        <img src="docs/images/01-homepage.png" alt="Storefront" width="100%"/>
-      </td>
-      <td width="50%"><strong>🤖 AI Assistant</strong><br/><em>Chat with 5 specialist agents</em><br/>
-        <img src="docs/images/04-ai-welcome.png" alt="AI Assistant Welcome" width="100%"/>
-      </td>
-    </tr>
-    <tr>
-      <td width="50%"><strong>🛡️ Fraud Detection</strong><br/><em>CrewAI multi-agent fraud analysis in action</em><br/>
-        <img src="docs/images/07-ai-fraud.png" alt="Fraud Agent Analysis" width="100%"/>
-      </td>
-      <td width="50%"><strong>⚙️ Admin Dashboard</strong><br/><em>Real-time fraud alerts & stock monitoring</em><br/>
-        <img src="docs/images/03-admin-dashboard.png" alt="Admin Dashboard" width="100%"/>
-      </td>
-    </tr>
-  </table>
-</div>
+### 🏠 1. The Storefront
+A fully functional e-commerce store with real product photography, category filters, and AI-powered recommendations.
+
+<p align="center">
+  <img src="docs/images/01-storefront.png" alt="Storefront" width="90%"/>
+</p>
+
+---
+
+### 🤖 2. AI Assistant — Where the Magic Happens
+The **AI Assistant** is the heart of the system — a LangGraph supervisor routes each query to the right specialist agent automatically.
+
+#### 📋 Order Agent — Track My Order
+The customer asks about their order. The supervisor detects it's an **Order** query and routes accordingly.
+
+<p align="center">
+  <img src="docs/images/03-agent-order.png" alt="Order Agent" width="80%"/>
+</p>
+
+#### 📦 Inventory Agent — Check Stock
+The customer asks about product availability. The **Inventory Agent** queries the live database.
+
+<p align="center">
+  <img src="docs/images/04-agent-inventory.png" alt="Inventory Agent" width="80%"/>
+</p>
+
+#### 🏷️ Pricing Agent — Find Deals
+The customer looks for sales. The **Pricing Agent** analyzes current promotions and slow-moving inventory.
+
+<p align="center">
+  <img src="docs/images/05-agent-pricing.png" alt="Pricing Agent" width="80%"/>
+</p>
+
+#### 🎧 Support Agent — Returns & Policies
+The customer needs help with a return. The **Support Agent** uses **RAG (ChromaDB)** to find the right policy and craft a response grounded in actual documents.
+
+<p align="center">
+  <img src="docs/images/06-agent-support.png" alt="Support Agent" width="80%"/>
+</p>
+
+#### 🛡️ Fraud Agent — CrewAI Multi-Agent Analysis ⭐
+The customer requests a fraud check. The **Fraud Agent** kicks off a **CrewAI sequential crew** — a Signal Analyst interprets the raw data, then a Risk Adjudicator makes the final decision.
+
+<p align="center">
+  <img src="docs/images/07-agent-fraud-crewai.png" alt="Fraud Agent - CrewAI Analysis" width="80%"/>
+</p>
+
+#### 🎯 All 5 Agents — One Seamless Conversation
+The complete conversation shows the LangGraph supervisor seamlessly switching between all 5 specialist agents based on customer intent.
+
+<p align="center">
+  <img src="docs/images/08-all-five-agents.png" alt="All Five Agents" width="80%"/>
+</p>
+
+---
+
+### ⚙️ 3. Admin Dashboard — Real-Time Operations
+The operations dashboard shows live fraud alerts, stock levels, and a complete audit trail of all agent activity.
+
+<p align="center">
+  <img src="docs/images/02-admin-dashboard.png" alt="Admin Dashboard" width="90%"/>
+</p>
+
+---
+
+### 📖 4. API Documentation
+Every agent capability is also exposed through a REST API with full Swagger documentation.
+
+<p align="center">
+  <img src="docs/images/09-api-docs.png" alt="API Documentation" width="90%"/>
+</p>
 
 ---
 

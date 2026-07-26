@@ -12,84 +12,76 @@ const outDir = path.join(__dirname, '..', 'docs', 'images');
   const baseUrl = 'http://localhost:3000';
   const apiUrl = 'http://localhost:8000';
 
-  console.log('📸 Starting screenshot capture...\n');
+  console.log('📸 Capturing the CommerceOS AI story...\n');
 
-  // 1. HOMEPAGE
-  console.log('1/9 🏠 Homepage...');
-  await page.goto(baseUrl, { waitUntil: 'networkidle' });
-  await page.waitForTimeout(2000);
-  await page.screenshot({ path: path.join(outDir, '01-homepage.png'), fullPage: true });
-  console.log('   ✅ Saved: 01-homepage.png');
-
-  // 2. CART / ORDERS PAGE
-  console.log('2/9 🛒 Orders page...');
-  await page.goto(`${baseUrl}/orders`, { waitUntil: 'networkidle' });
-  await page.waitForTimeout(1000);
-  await page.screenshot({ path: path.join(outDir, '02-orders.png'), fullPage: true });
-  console.log('   ✅ Saved: 02-orders.png');
-
-  // 3. ADMIN DASHBOARD
-  console.log('3/9 ⚙️ Admin Dashboard...');
-  await page.goto(`${baseUrl}/admin`, { waitUntil: 'networkidle' });
-  await page.waitForTimeout(1500);
-  await page.screenshot({ path: path.join(outDir, '03-admin-dashboard.png'), fullPage: true });
-  console.log('   ✅ Saved: 03-admin-dashboard.png');
-
-  // 4. AI ASSISTANT - Welcome screen
-  console.log('4/9 🤖 AI Assistant - Welcome...');
-  await page.goto(`${baseUrl}/chat`, { waitUntil: 'networkidle' });
-  await page.waitForTimeout(1500);
-  await page.screenshot({ path: path.join(outDir, '04-ai-welcome.png'), fullPage: true });
-  console.log('   ✅ Saved: 04-ai-welcome.png');
-
-  // Helper: send a chat message and wait for response
   async function sendChat(query, waitMs = 10000) {
     const input = await page.$('input[type="text"]');
-    if (!input) {
-      console.log('   ⚠️ Chat input not found, trying form submit...');
-      return;
-    }
+    if (!input) { console.log('   ⚠️ No input found'); return; }
     await input.click();
     await input.fill(query);
-    await page.waitForTimeout(500);
-    // Try Enter key
+    await page.waitForTimeout(300);
     await page.keyboard.press('Enter');
-    console.log(`   ⏳ Waiting ${waitMs/1000}s for response...`);
+    console.log(`   ⏳ "${query.slice(0, 50)}..." — waiting ${waitMs/1000}s`);
     await page.waitForTimeout(waitMs);
   }
 
-  // 5. AI ASSISTANT - Support Agent
-  console.log('5/9 🎧 Support Agent - Return policy...');
+  // ─── 1. HOMEPAGE ───────────────────────────────────
+  console.log('1/8 🏠 Storefront...');
+  await page.goto(baseUrl, { waitUntil: 'networkidle' });
+  await page.waitForTimeout(2000);
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.screenshot({ path: path.join(outDir, '01-storefront.png'), fullPage: true });
+  console.log('   ✅ 01-storefront.png\n');
+
+  // ─── 2. ADMIN DASHBOARD ───────────────────────────
+  console.log('2/8 ⚙️ Admin Dashboard...');
+  await page.goto(`${baseUrl}/admin`, { waitUntil: 'networkidle' });
+  await page.waitForTimeout(1500);
+  await page.screenshot({ path: path.join(outDir, '02-admin-dashboard.png'), fullPage: true });
+  console.log('   ✅ 02-admin-dashboard.png\n');
+
+  // ─── 3. CHAT — FULL AGENT STORY ───────────────────
+  console.log('3/8 🤖 AI Assistant — Full Agent Journey...');
   await page.goto(`${baseUrl}/chat`, { waitUntil: 'networkidle' });
   await page.waitForTimeout(1000);
-  await sendChat('Can I return a damaged item from order O2010?', 12000);
-  await page.screenshot({ path: path.join(outDir, '05-ai-support.png'), fullPage: true });
-  console.log('   ✅ Saved: 05-ai-support.png');
 
-  // 6. AI ASSISTANT - Inventory Agent
-  console.log('6/9 📦 Inventory Agent - Stock check...');
+  // Agent 1: Order — Track an order
+  await sendChat('Where is my order O2001?', 10000);
+  // Take screenshot after first agent response
+  await page.screenshot({ path: path.join(outDir, '03-agent-order.png'), fullPage: true });
+  console.log('   ✅ 03-agent-order.png');
+
+  // Agent 2: Inventory — Check stock
   await sendChat('Do we have white t-shirts in stock?', 12000);
-  await page.screenshot({ path: path.join(outDir, '06-ai-inventory.png'), fullPage: true });
-  console.log('   ✅ Saved: 06-ai-inventory.png');
+  await page.screenshot({ path: path.join(outDir, '04-agent-inventory.png'), fullPage: true });
+  console.log('   ✅ 04-agent-inventory.png');
 
-  // 7. AI ASSISTANT - Fraud Agent (CrewAI)
-  console.log('7/9 🛡️ Fraud Agent - CrewAI analysis...');
+  // Agent 3: Pricing — Check sales
+  await sendChat('Any items on sale right now?', 10000);
+  await page.screenshot({ path: path.join(outDir, '05-agent-pricing.png'), fullPage: true });
+  console.log('   ✅ 05-agent-pricing.png');
+
+  // Agent 4: Support — Return policy
+  await sendChat('Can I return a damaged item from order O2010?', 12000);
+  await page.screenshot({ path: path.join(outDir, '06-agent-support.png'), fullPage: true });
+  console.log('   ✅ 06-agent-support.png');
+
+  // Agent 5: Fraud — CrewAI analysis (THE STAR)
   await sendChat('Check order O2004 for fraud', 20000);
-  await page.screenshot({ path: path.join(outDir, '07-ai-fraud.png'), fullPage: true });
-  console.log('   ✅ Saved: 07-ai-fraud.png');
+  await page.screenshot({ path: path.join(outDir, '07-agent-fraud-crewai.png'), fullPage: true });
+  console.log('   ✅ 07-agent-fraud-crewai.png');
 
-  // 8. AI ASSISTANT - Full conversation with all agents
-  console.log('8/9 🤖 Full conversation history...');
-  await page.screenshot({ path: path.join(outDir, '08-ai-full-chat.png'), fullPage: true });
-  console.log('   ✅ Saved: 08-ai-full-chat.png');
+  // Full conversation — all 5 agents visible
+  await page.screenshot({ path: path.join(outDir, '08-all-five-agents.png'), fullPage: true });
+  console.log('   ✅ 08-all-five-agents.png\n');
 
-  // 9. API DOCS
+  // ─── 4. SCROLL TO SHOW FRAUD HIGHLIGHT ────────────
   console.log('9/9 📖 API Documentation...');
   await page.goto(`${apiUrl}/docs`, { waitUntil: 'networkidle' });
   await page.waitForTimeout(2000);
   await page.screenshot({ path: path.join(outDir, '09-api-docs.png'), fullPage: true });
-  console.log('   ✅ Saved: 09-api-docs.png');
+  console.log('   ✅ 09-api-docs.png\n');
 
-  console.log('\n✅ All 9 screenshots captured in docs/images/');
+  console.log('🎉 All screenshots captured!');
   await browser.close();
 })();
