@@ -46,30 +46,16 @@ else:
     cols = st.columns(4)
     for idx, product in enumerate(products):
         with cols[idx % 4], st.container(border=True):
-                # Product image (real photo with SVG fallback)
+                # Product image (SVG with product icon)
                 pid = product['product_id'].lower()
-                img_jpg = f"ui/assets/images/product_{pid}.jpg"
-                img_svg = f"ui/assets/images/product_{pid}.svg"
                 try:
-                    with open(img_jpg, 'rb') as f:
-                        img_data = f.read()
-                    import base64
-                    b64 = base64.b64encode(img_data).decode()
-                    st.markdown(
-                        f'<div style="border-radius: 8px; overflow: hidden;">'
-                        f'<img src="data:image/jpeg;base64,{b64}" style="width:100%;height:auto;display:block;"/>'
-                        f'</div>',
-                        unsafe_allow_html=True,
-                    )
+                    with open(f"ui/assets/images/product_{pid}.svg", encoding='utf-8') as f:
+                        svg_content = f.read()
+                    st.markdown(f'<div style="border-radius: 8px; overflow: hidden;">{svg_content}</div>',
+                                unsafe_allow_html=True)
                 except FileNotFoundError:
-                    try:
-                        with open(img_svg) as f:
-                            svg_content = f.read()
-                        st.markdown(f'<div style="border-radius: 8px; overflow: hidden;">{svg_content}</div>',
-                                    unsafe_allow_html=True)
-                    except FileNotFoundError:
-                        st.markdown(f'<div style="height:100px;background:#f0f0f0;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#636e72;">{product["product_name"][0]}</div>',
-                                    unsafe_allow_html=True)
+                    st.markdown(f'<div style="height:100px;background:#f0f0f0;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#636e72;">{product["product_name"][0]}</div>',
+                                unsafe_allow_html=True)
 
                 # Sale badge
                 if product.get("is_on_sale"):
