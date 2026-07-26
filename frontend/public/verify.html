@@ -47,7 +47,7 @@ products.forEach((name, i) => {
   const card = document.createElement('div');
   card.className = 'card';
   card.innerHTML = \`
-    <img src="/images/\${pid}.jpg" onerror="this.parentElement.className='card bad'; this.src='/images/\${pid}.svg'" />
+    <img src="/images/\${pid}.jpg" onerror="this.parentElement.className='card bad'; this.onerror=null; this.parentElement.innerHTML='<div style=\"padding:20px;text-align:center;\"><img src=/images/\${pid}.svg style=\"max-height:160px;\"></div>'" />
     <h3>\${name}</h3>
     <p>ID: \${pid}</p>
   \`;

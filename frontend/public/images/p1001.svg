@@ -2,10 +2,19 @@
   <defs>
     <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" style="stop-color:#1a1a2e;stop-opacity:1"/>
-      <stop offset="100%" style="stop-color:#1a1a2edd;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#16213e;stop-opacity:1"/>
+    </linearGradient>
+    <linearGradient id="shirt" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2d2d2d;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#1a1a1a;stop-opacity:1"/>
     </linearGradient>
   </defs>
   <rect width="600" height="600" fill="url(#bg)" rx="12"/>
-  <text x="300" y="240" text-anchor="middle" font-size="110">👕</text>
-  <text x="300" y="350" text-anchor="middle" fill="#ffffff" font-size="24" font-weight="700" font-family="Inter, Arial, sans-serif" opacity="0.95">Classic Cotton T-Shirt - Black</text>
+  <!-- T-shirt shape -->
+  <path d="M190 190 L190 160 L170 140 L150 155 L180 185 L180 350 L220 350 L220 460 L380 460 L380 350 L420 350 L420 185 L450 155 L430 140 L410 160 L410 190 L380 200 L380 220 L300 230 L220 220 L220 200 Z"
+        fill="url(#shirt)" stroke="#444" stroke-width="2"/>
+  <!-- Collar -->
+  <path d="M260 190 Q300 170 340 190" fill="none" stroke="#444" stroke-width="3"/>
+  <text x="300" y="530" text-anchor="middle" fill="#ffffff" font-size="22" font-weight="bold" font-family="Arial" opacity="0.9">Classic Cotton T-Shirt</text>
+  <text x="300" y="558" text-anchor="middle" fill="#aaaaaa" font-size="14" font-family="Arial">100% Premium Cotton ● Black</text>
 </svg>
