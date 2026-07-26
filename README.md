@@ -1,239 +1,364 @@
-# CommerceOS AI 🛍️
+<div align="center">
+  <br/>
+  <h1>🛍️ CommerceOS AI</h1>
+  <p><strong>Autonomous Multi-Agent E-Commerce Operations System</strong></p>
+  <p>
+    <img src="https://img.shields.io/badge/Python-3.13-%233776AB?logo=python&logoColor=white" alt="Python 3.13"/>
+    <img src="https://img.shields.io/badge/LangGraph-0.4-%2300B4D8?logo=langchain&logoColor=white" alt="LangGraph 0.4"/>
+    <img src="https://img.shields.io/badge/CrewAI-0.105-%23FF6B35" alt="CrewAI 0.105"/>
+    <img src="https://img.shields.io/badge/Streamlit-1.40-%23FF4B4B?logo=streamlit&logoColor=white" alt="Streamlit 1.40"/>
+    <img src="https://img.shields.io/badge/FastAPI-0.115-%23009688?logo=fastapi&logoColor=white" alt="FastAPI"/>
+    <img src="https://img.shields.io/badge/Next.js-14.2-%23000000?logo=next.js&logoColor=white" alt="Next.js 14"/>
+    <br/>
+    <img src="https://img.shields.io/badge/CI-passing-%2328a745" alt="CI passing"/>
+    <img src="https://img.shields.io/badge/coverage-80%25-%23a0c334" alt="Coverage 80%"/>
+    <img src="https://img.shields.io/badge/code%20style-ruff-%23D32F2F" alt="Ruff"/>
+    <img src="https://img.shields.io/badge/license-MIT-%23blue" alt="MIT License"/>
+  </p>
+  <br/>
+</div>
 
-[![Python](https://img.shields.io/badge/Python-3.13-blue?logo=python&logoColor=white)]()
-[![Streamlit](https://img.shields.io/badge/Streamlit-1.40-red?logo=streamlit&logoColor=white)]()
-[![LangGraph](https://img.shields.io/badge/LangGraph-0.4-green)]()
-[![CrewAI](https://img.shields.io/badge/CrewAI-0.105-orange)]()
-[![Ruff](https://img.shields.io/badge/Ruff-0.9-purple)]()
-[![CI](https://img.shields.io/badge/CI-passing-brightgreen)]()
-[![Coverage](https://img.shields.io/badge/Coverage-80%25-yellowgreen)]()
+## 📋 Overview
 
-> **Autonomous multi-agent e-commerce operations system** — Five AI agents collaborate to run a full e-commerce storefront. Order management, fraud detection, inventory control, customer support, and dynamic pricing — all powered by a LangGraph supervisor, CrewAI analysis pipeline, and event-driven agent collaboration.
+CommerceOS AI is an **autonomous, event-driven e-commerce platform** powered by **five specialized AI agents** working in orchestration. Unlike traditional e-commerce systems where features are hardcoded, this platform uses a **LangGraph supervisor** to route user intents to the right agent, a **CrewAI pipeline** for fraud analysis, and an **EventBus** for agent-to-agent collaboration.
+
+> **Five AI agents. One intelligent storefront. Zero humans in the loop.**
 
 ---
 
-## ✨ What Makes This Different
-
-Most e-commerce demos are CRUD apps with a chatbot bolted on. CommerceOS AI is different:
-
-| Feature | What It Means |
-|---------|---------------|
-| **Agent-to-Agent Collaboration** | Place an order → fraud check + inventory deduction + stock alerts fire automatically via EventBus, without a human in the loop |
-| **CrewAI Fraud Pipeline** | Two AI agents (Signal Analyst → Risk Adjudicator) debate each flagged order before making a decision |
-| **LangGraph Supervisor** | Routes queries to the right specialist agent — no hardcoded if/else chains, adding a new agent is one file + one registry line |
-| **RAG-Grounded Support** | Support Agent answers from actual policy documents via ChromaDB, not LLM hallucination |
-| **Full Observability** | Every agent action is logged to the AgentLog table and visible in the Admin Dashboard |
-
-## 🏗️ Architecture
+## 🧠 System Architecture
 
 ```
-┌──────────────────────────────────────────────────┐
-│              STREAMLIT STOREFRONT                 │
-│  Browse → Cart → Checkout → AI Assistant          │
-│  Order History → Admin Dashboard                  │
-└──────────────────────┬───────────────────────────┘
-                       │
-┌──────────────────────▼───────────────────────────┐
-│            LANGGRAPH SUPERVISOR                    │
-│     AgentRegistry routing + MemorySaver            │
-│     (keyword pre-check → LLM fallback → 5 agents)  │
-└───┬──────┬──────┬──────┬──────┬───────────────────┘
-    │      │      │      │      │
-┌───▼──┐ ┌─▼──┐ ┌─▼──┐ ┌▼───┐ ┌▼──────┐
-│Supp. │ │Inv.│ │Frau│ │Order│ │Pricing│
-│(RAG) │ │LLM │ │Crew│ │LLM │ │LLM    │
-└──────┘ └────┘ └────┘ └────┘ └───────┘
-    │      │      │      │      │
-┌───▼──────▼──────▼──────▼──────▼──────────────┐
-│           MCP TOOL LAYER (SQLAlchemy)           │
-│  Products │ Orders │ Customers │ AgentLog       │
-└──────────────────────┬─────────────────────────┘
-                       │
-┌──────────────────────▼─────────────────────────┐
-│              EVENT BUS + WORKFLOWS               │
-│   order.created → fraud check → inventory ded.  │
-│   → stock alert → status update → AgentLog       │
-└──────────────────────────────────────────────────┘
+                         ┌─────────────────────────────────────┐
+                         │         NEXT.JS STOREFRONT           │
+                         │   Products · Cart · AI Chat · Admin   │
+                         └───────────────┬─────────────────────┘
+                                         │ HTTP / SSE
+                         ┌───────────────▼─────────────────────┐
+                         │        FASTAPI REST LAYER            │
+                         │     (9 MCP tools · SSE streaming)    │
+                         └───────────────┬─────────────────────┘
+                                         │
+                    ┌────────────────────▼────────────────────┐
+                    │         LANGGRAPH SUPERVISOR             │
+                    │  AgentRegistry routing · MemorySaver     │
+                    │  (keyword pre-check → LLM fallback)      │
+                    └──────┬──────┬──────┬──────┬──────┬──────┘
+                           │      │      │      │      │
+                    ┌──────▼┐ ┌──▼──┐ ┌─▼──┐ ┌─▼───┐ ┌▼──────┐
+                    │Support│ │Inv. │ │Frau│ │Order│ │Pricing│
+                    │(RAG)  │ │(LLM)│ │(Crw│ │(LLM)│ │(LLM)  │
+                    └──────┘ └─────┘ └────┘ └─────┘ └───────┘
+                           │      │      │      │      │
+                    ┌──────▼──────▼──────▼──────▼──────▼──────┐
+                    │        MCP TOOL LAYER (SQLAlchemy)       │
+                    │  Products · Orders · Customers · Logs    │
+                    └───────────────────┬──────────────────────┘
+                                        │
+                    ┌───────────────────▼──────────────────────┐
+                    │         EVENT BUS + WORKFLOWS             │
+                    │   order.created → fraud check → deduct    │
+                    │   → stock alert → status update → log     │
+                    └──────────────────────────────────────────┘
 ```
+
+---
+
+## 🤖 The Five Agents
+
+| Agent | Framework | Core Capability | Trigger |
+|-------|-----------|----------------|---------|
+| **🎧 Support** | LangChain + ChromaDB RAG | Policy Q&A, returns, order lookups grounded in actual documents | `"Can I return a damaged item?"` |
+| **📦 Inventory** | LangChain + Groq | Live stock queries, low-stock alerts, reorder recommendations | `"Do you have white t-shirts?"` |
+| **🛡️ Fraud** | CrewAI (2-role sequential) | Signal Analyst → Risk Adjudicator pipeline with scored decisions | `"Check order O2004 for fraud"` |
+| **📋 Order** | LangChain | Full lifecycle: tracking, cancellation, shipment generation | `"Where is my order O2001?"` |
+| **🏷️ Pricing** | LangChain | Sale suggestions, slow-mover analysis, dynamic markdown | `"Any items on sale?"` |
+
+### Agent Collaboration Flow
+
+When a customer places an order, the system doesn't just save a row — it orchestrates a multi-agent workflow:
+
+```
+Order Placed
+  │
+  ├─▶ Fraud Agent (CrewAI) analyzes signals
+  │     ├─ Velocity check (15-min window)
+  │     ├─ Country mismatch detection
+  │     ├─ New-account + high-value scoring
+  │     └─ Disposable email detection
+  │
+  ├─▶ Inventory Agent deducts stock
+  │     └─ Triggers low-stock alert if threshold hit
+  │
+  └─▶ Order status → confirmed/pending
+        └─ All steps logged to AgentLog
+        └─ Admin Dashboard updates in real-time
+```
+
+---
+
+## ⚙️ Technical Deep Dive
+
+### LangGraph Supervisor
+The routing layer uses a **StateGraph** with configurable checkpoints (MemorySaver). Each conversation gets a thread_id for continuity. Routing happens in two stages:
+1. **Keyword pre-check** — `AgentRegistry.route()` matches against agent keyword lists (longest match wins)
+2. **LLM fallback** — If no keyword matches, `ChatGroq` classifies the intent
+
+### CrewAI Fraud Pipeline
+The fraud agent runs a **two-role sequential crew**:
+- **Signal Analyst** — Objectively interprets raw fraud signals
+- **Risk Adjudicator** — Makes final decision: `APPROVE` / `HOLD` / `REJECT`
+
+Each flagged order creates a persistent `Alert` in the database, visible in the admin dashboard.
+
+### EventBus Architecture
+The in-process pub/sub system enables **decoupled agent collaboration**:
+```python
+event_bus.emit("order.created", {"order_id": "O2001"})
+# Automatically triggers: fraud check → inventory deduct → stock alert
+```
+
+### MCP Tool Layer
+Nine database-backed tools provide a **unified data access layer** for all agents:
+`get_all_products`, `search_products`, `get_low_stock_products`, `get_product_by_id`, `get_order_by_id`, `get_orders_by_email`, `get_fraud_signals`, `get_all_flagged_orders`, `append_order`
+
+---
+
+## 🧩 Technology Deep Dive
+
+### LangGraph — Orchestration Spine
+
+The entire agent routing system is built on **LangGraph's StateGraph**, a stateful graph-based orchestration framework. Each user query flows through a directed graph where the **Supervisor Node** decides routing, and the selected **Agent Node** processes the request.
+
+```python
+graph = StateGraph(GraphState)
+graph.add_node("supervisor", supervisor_node)
+graph.add_node("fraud", lambda s: _run_agent(s, "fraud"))
+graph.set_entry_point("supervisor")
+graph.add_conditional_edges("supervisor", route_decision, route_map)
+```
+
+**MemorySaver** checkpointer maintains per-session conversation history — enabling context-aware multi-turn interactions without external databases:
+
+```python
+compiled = graph.compile(checkpointer=MemorySaver())
+result = compiled.invoke(initial, {"configurable": {"thread_id": thread_id}})
+```
+
+### LangChain — Agent Intelligence
+
+Each specialist agent (Support, Inventory, Order, Pricing) uses **LangChain** with **ChatGroq** to power its LLM interactions. The framework provides:
+- **Prompt templating** — Consistent system prompts per agent role
+- **Output parsing** — Structured responses from LLM outputs
+- **Integration layer** — Unified interface across LLM providers (Groq, with drop-in replacement for OpenAI, Anthropic, etc.)
+
+### CrewAI — Multi-Agent Fraud Analysis
+
+The Fraud Detection Agent runs a **CrewAI sequential crew** — two AI agents that work together in a pipeline:
+
+| Role | Responsibility | 
+|------|---------------|
+| **Fraud Signal Analyst** | Objectively interprets raw fraud signals (velocity, geography, account age, email) |
+| **Risk Adjudicator** | Receives the analyst's interpretation and makes a final decision: `APPROVE` / `HOLD` / `REJECT` |
+
+```python
+crew = Crew(
+    agents=[analyst, adjudicator],
+    tasks=[analyze, adjudicate],
+    process=Process.sequential,
+)
+result = crew.kickoff()  # Two agents debate → one decision
+```
+
+This sequential design mirrors real-world fraud operations where an analyst prepares evidence and a senior reviewer makes the call.
+
+### RAG (Retrieval-Augmented Generation) — Grounded Support
+
+The Support Agent uses **ChromaDB** as a vector store, loaded with actual refund policy documents. When a customer asks about returns or refunds, the agent:
+
+1. **Embeds** the query using sentence-transformers
+2. **Searches** ChromaDB for the top-3 most relevant policy chunks
+3. **Grounds** the LLM response in the retrieved policy text
+
+```python
+vectorstore = load_vectorstore()  # ChromaDB with policy embeddings
+docs = vectorstore.similarity_search(query, k=3)
+# LLM generates answer grounded in retrieved policy chunks
+```
+
+This prevents hallucination — the Support Agent's answers come from actual policy documents, not LLM training data.
+
+### MCP Tool Layer — Decoupled Data Access
+
+All agents share a **unified tool registry** (9 SQLAlchemy-backed functions) abstracted behind `call_tool(name, **kwargs)`. This decoupling means:
+
+- Agents never touch the database directly
+- Tools can be swapped without changing agent code
+- Adding a new data source = writing one tool function
+
+```python
+def call_tool(tool_name: str, **kwargs):
+    func = get_tool(tool_name)
+    return func(**kwargs)
+
+# Any agent can query any data:
+products = call_tool("search_products", query="t-shirt")
+order = call_tool("get_order_by_id", order_id="O2001")
+```
+
+### EventBus — Agent-to-Agent Collaboration
+
+The **in-process pub/sub EventBus** enables decoupled multi-agent workflows without direct dependencies. When an order is placed, a single event triggers three autonomous handlers:
+
+```python
+event_bus.emit("order.created", {
+    "order_id": "O2042", "customer_email": "..."
+})
+# Auto-triggers:
+# ─► Fraud Agent runs CrewAI analysis
+# ─► Inventory Agent deducts stock
+# ─► Stock Alert if threshold exceeded
+# ─► Order status updated to confirmed
+```
+
+Each handler runs in its own context with its own database session — failures in one don't block others.
+
+---
 
 ## 🚀 Quick Start
 
-### Option 1: Docker (recommended)
+### Prerequisites
+- Python 3.13+
+- Groq API key ([free tier](https://console.groq.com))
+- Docker (optional)
 
+### Option 1: Docker
 ```bash
 docker compose -f infrastructure/docker-compose.yml up
 ```
-
-Open **http://localhost:8501** in your browser. The database auto-seeds on first run.
+Open **http://localhost:3000** (frontend) or **http://localhost:8501** (Streamlit).
 
 ### Option 2: Manual
-
 ```bash
-# 1. Clone and enter
+# Clone
 git clone https://github.com/yourusername/commerceos-ai.git
 cd commerceos-ai
 
-# 2. Set up environment
+# Backend
 python -m venv venv
 source venv/Scripts/activate    # Windows (Git Bash)
-# source venv/bin/activate      # macOS/Linux
 pip install -r requirements.txt
-
-# 3. Configure API keys
-cp .env.example .env
-# Edit .env — add your Groq API key and admin password
-
-# 4. Seed the database
+cp .env.example .env            # Add your GROQ_API_KEY
 python scripts/seed.py
+python rag/vectorstore_setup.py # First time only
+uvicorn backend.main:app --reload --port 8000
 
-# 5. (First time only) Build the RAG vectorstore
-python rag/vectorstore_setup.py
-
-# 6. Launch
-streamlit run app.py
+# Frontend (new terminal)
+cd frontend
+npm install
+npm run dev
 ```
 
-## 🤖 Agents
+Open **http://localhost:3000** 🎉
 
-| Agent | Framework | What It Does | When To Ask |
-|-------|-----------|-------------|-------------|
-| **Support** | LangChain + RAG (ChromaDB) | Policy questions, order lookups, cross-agent queries | "Can I return a damaged item?" |
-| **Inventory** | LangChain | Stock checks, low-stock alerts, reorder monitoring | "Do you have white t-shirts in stock?" |
-| **Fraud** | CrewAI (2-role pipeline) | Signal Analyst → Risk Adjudicator sequential analysis | "Check order O2004 for fraud" |
-| **Order** | LangChain | Order lifecycle, tracking numbers, cancellations | "Where is my order O2001?" |
-| **Pricing** | LangChain | Sale suggestions, slow-moving inventory analysis | "Any items on sale right now?" |
+---
 
-## ⚡ Event-Driven Workflows
-
-```
-┌──────────────┐
-│  Order       │
-│  Placed      │
-└──────┬───────┘
-       │
-       ▼
-┌──────────────┐     ┌──────────────────┐     ┌──────────────────┐
-│ Fraud Agent  │────▶│ Inventory        │────▶│ Stock Alert      │
-│ (CrewAI      │     │ Deducted         │     │ (if low stock)   │
-│  analysis)   │     │                  │     │                  │
-└──────────────┘     └──────────────────┘     └──────────────────┘
-       │
-       ▼
-┌──────────────┐     ┌──────────────────┐     ┌──────────────────┐
-│ Order Status │────▶│ AgentLog         │────▶│ Admin Dashboard  │
-│ → confirmed  │     │ (all steps)      │     │ (displays all)   │
-└──────────────┘     └──────────────────┘     └──────────────────┘
-```
-
-## 📊 Pages
-
-| Page | Purpose |
-|------|---------|
-| **Home** 🏠 | Product grid with category filters, sale badges, search |
-| **Cart & Checkout** 🛒 | Full cart with quantity adjustment, checkout form, event-triggered workflows |
-| **AI Assistant** 🤖 | Chat interface to all 5 agents with example buttons and admin mode |
-| **Order History** 📋 | Look up orders by email, view status and fraud results |
-| **Admin Dashboard** ⚙️ | Operations control: fraud alerts, stock overview, agent activity log, quick actions |
-
-## 🧪 Testing
+## 🧪 Testing & Quality
 
 ```bash
 # Run all tests with coverage
-pytest tests/ -v --cov=commerceos
+pytest tests/ -v --cov=commerceos --cov-report=term
 
-# Run specific test file
-pytest tests/test_agents.py -v
+# Lint check
+ruff check .
+
+# Expected: 33+ tests passing, 80%+ coverage
 ```
+
+| Metric | Status |
+|--------|--------|
+| Tests | ✅ 33 passing |
+| Linting | ✅ Ruff clean (108 issues fixed) |
+| Coverage | ✅ 80%+ |
+| Type Safety | ✅ Pydantic + TypedDict |
+
+---
+
+## 🏗️ Project Structure
+
+```
+commerceos-ai/
+│
+├── commerceos/                     # 🧠 Core Engine
+│   ├── agents/                     # 5 AI Agents (BaseAgent pattern)
+│   │   ├── base.py                 # Abstract base + AgentResult
+│   │   ├── registry.py             # Self-registering routing
+│   │   └── [support, inventory, fraud, order, pricing]_agent.py
+│   ├── orchestration/              # 🔄 Supervisor & Events
+│   │   ├── supervisor.py           # LangGraph StateGraph + MemorySaver
+│   │   ├── event_bus.py           # Pub/sub collaboration layer
+│   │   └── workflows.py           # Event-driven workflow definitions
+│   ├── mcp/                        # 🔧 Tool Layer
+│   │   ├── tools.py               # 9 DB-backed tools
+│   │   └── registry.py            # Tool discovery
+│   ├── database/                   # 💾 Persistence
+│   │   ├── models.py              # 7 SQLAlchemy ORM models
+│   │   ├── connection.py          # Session factory
+│   │   └── seed.py                # CSV → SQLite seeder
+│   └── observability/             # 📊 Observability
+│       ├── logger.py              # Structured JSON logging
+│       └── activity_tracker.py    # Every action → AgentLog table
+│
+├── backend/                        # 🌐 FastAPI REST API
+├── frontend/                       # 🎨 Next.js Storefront
+├── pages/                          # 🖥️ Streamlit pages (legacy)
+├── ui/                             # Shared UI components & assets
+├── infrastructure/                 # 🐳 Docker
+├── tests/                          # 🧪 33 tests
+└── data/                           # 📦 CSV seeds
+```
+
+---
 
 ## 🛠️ Tech Stack
 
 | Category | Technology |
 |----------|-----------|
-| **Runtime** | Python 3.13, Streamlit |
+| **Languages** | Python 3.13, TypeScript |
 | **AI Orchestration** | LangGraph (StateGraph + MemorySaver) |
 | **Agent Framework** | LangChain, CrewAI (2-role sequential), ChromaDB RAG |
-| **LLM Provider** | Groq API (free tier) — swap any OpenAI-compatible endpoint |
-| **Database** | SQLAlchemy ORM + SQLite (dev) / PostgreSQL-ready |
+| **LLM Provider** | Groq API (llama-3.3-70b) |
+| **Backend** | FastAPI, SQLAlchemy 2.0, Pydantic |
+| **Frontend** | Next.js 14, React 18, Tailwind CSS |
+| **Database** | SQLite (dev) / PostgreSQL-ready |
 | **Infrastructure** | Docker, docker-compose |
 | **CI/CD** | GitHub Actions (lint + test + coverage) |
-| **Quality** | ruff (linting), pytest-cov (coverage) |
+| **Quality** | Ruff (linting), pytest-cov (coverage) |
 
-## 📁 Project Structure
-
-```
-commerceos-ai/
-├── commerceos/                    # 🧠 Engine package
-│   ├── agents/                    # 5 AI agents (BaseAgent pattern)
-│   │   ├── base.py                # Abstract base + AgentResult
-│   │   ├── registry.py            # Self-registering agent registry
-│   │   ├── support_agent.py       # RAG-based customer support
-│   │   ├── inventory_agent.py     # Stock management
-│   │   ├── fraud_agent.py         # CrewAI 2-role fraud pipeline
-│   │   ├── order_agent.py         # Order lifecycle
-│   │   └── pricing_agent.py       # Dynamic pricing
-│   ├── orchestration/             # 🔄 Supervisor + events
-│   │   ├── supervisor.py          # LangGraph StateGraph
-│   │   ├── event_bus.py           # Pub/sub event system
-│   │   └── workflows.py           # Event-driven workflows
-│   ├── mcp/                       # 🔧 MCP tool layer
-│   │   ├── tools.py               # 9 DB-backed tools
-│   │   └── registry.py            # Tool registry
-│   ├── database/                  # 💾 Persistence
-│   │   ├── models.py              # 7 SQLAlchemy models
-│   │   ├── connection.py          # Session management
-│   │   └── seed.py                # CSV seeding
-│   └── observability/             # 📊 Monitoring
-│       ├── logger.py              # Structured JSON logging
-│       └── activity_tracker.py    # AgentLog table writer
-├── pages/                         # 🖥️ Streamlit views
-│   ├── Cart.py                    # Cart + event emission
-│   ├── AI_Assistant.py            # 5-agent chat panel
-│   ├── order_history.py           # Email lookup
-│   └── admin_dashboard.py         # Ops dashboard
-├── ui/                            # 🎨 Shared UI
-│   ├── components.py              # Reusable widgets
-│   ├── styling.py                 # Brand CSS
-│   └── assets/images/             # 20 SVG product images
-├── rag/                           # 📚 RAG vectorstore
-│   └── vectorstore_setup.py       # ChromaDB setup
-├── infrastructure/                # 🐳 Docker
-│   ├── Dockerfile
-│   ├── docker-compose.yml
-│   └── entrypoint.sh
-├── tests/                         # 🧪 Test suite
-│   ├── test_agents.py             # Agent routing tests
-│   ├── test_tools.py              # MCP tool tests
-│   └── test_workflows.py          # Integration tests
-├── data/                          # 📦 Data files
-│   ├── products.csv               # 20 products
-│   ├── orders.csv                 # 15 orders
-│   └── commerceos.db              # SQLite DB (runtime)
-├── docs/                          # 📝 Documentation
-│   └── superpowers/specs/         # Design specs
-└── backend/                       # 🌐 FastAPI REST API
-    └── main.py                    # API endpoints
-```
+---
 
 ## 🔒 Security
 
-- **API keys** go in `.env` (gitignored) — never committed to the repository
-- **Admin password** configured via `ADMIN_PASSWORD` env variable — no hardcoded defaults
-- **No real PII** — seed data uses fictional customer information
-- Copy `.env.example` to `.env` and fill in your values before running
+- **API Keys** stored in `.env` (gitignored) — never committed
+- **Admin Access** configured via `ADMIN_PASSWORD` env var — no hardcoded defaults
+- **No PII** — seed data uses fictional customers
+- **Dependencies** auditable via `pip-audit`
 
-## 🗺️ Roadmap
-
-- [x] 5 specialist agents with LangGraph routing
-- [x] Event-driven workflows (order → fraud → inventory)
-- [x] CrewAI fraud analysis pipeline
-- [x] Full Streamlit storefront with checkout
-- [x] Docker deployment
-- [x] CI/CD pipeline with linting and coverage
-- [ ] Real MCP server transport (SSE-based)
-- [ ] ML-based fraud scoring on top of rule-based signals
-- [ ] Cross-agent shared memory across sessions
-- [ ] PostgreSQL support for horizontal scaling
+---
 
 ## 📄 License
 
 MIT
+
+---
+
+<div align="center">
+  <p><strong>Built with LangGraph, CrewAI, and FastAPI</strong></p>
+  <p>
+    <a href="#-overview">Overview</a> ·
+    <a href="#-system-architecture">Architecture</a> ·
+    <a href="#-the-five-agents">Agents</a> ·
+    <a href="#-quick-start">Quick Start</a>
+  </p>
+  <br/>
+</div>
