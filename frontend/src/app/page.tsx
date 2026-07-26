@@ -16,8 +16,8 @@ export default function HomePage() {
               </span>
             </h1>
             <p className="text-gray-300 text-lg mb-6 max-w-lg">
-              Five AI agents working together to give you the best shopping experience —
-              from support to fraud protection to dynamic pricing.
+              Your personal AI shopping team — 5 agents working in sync to find your style,
+              protect your purchases, and always get you the best price.
             </p>
             <div className="flex gap-3 flex-wrap">
               <a href="#products" className="btn-primary !bg-white !text-dark-100 hover:!bg-gray-100">
