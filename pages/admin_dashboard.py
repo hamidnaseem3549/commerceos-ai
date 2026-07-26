@@ -1,4 +1,5 @@
 """Admin Operations Dashboard — fraud alerts, stock overview, agent activity."""
+import os
 import streamlit as st
 from datetime import datetime, timezone
 from ui.styling import inject_custom_css
@@ -16,13 +17,18 @@ if "admin_authed" not in st.session_state:
 
 if not st.session_state.admin_authed:
     st.title("⚙️ Admin Dashboard")
-    pw = st.text_input("Enter admin password (default: admin123)", type="password")
-    if pw == "admin123":
+    admin_password = os.environ.get("ADMIN_PASSWORD", "")
+    if not admin_password:
+        st.error("ADMIN_PASSWORD environment variable not set. Add it to your .env file.")
+        st.info("Copy `.env.example` to `.env` and set `ADMIN_PASSWORD`.")
+        st.stop()
+    pw = st.text_input("Enter admin password", type="password")
+    if pw == admin_password:
         st.session_state.admin_authed = True
         st.rerun()
     elif pw:
         st.error("Incorrect password")
-    st.info("🔒 Default password: `admin123`")
+    st.info("🔒 Set `ADMIN_PASSWORD` in your `.env` file.")
     st.stop()
 
 st.title("⚙️ Operations Dashboard")
