@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head><title>Verify Product Images</title>
+<style>
+body { font-family: Arial; padding: 20px; background: #f5f5f5; }
+h1 { margin-bottom: 20px; }
+.grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.card { background: white; border-radius: 12px; padding: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.card img { width: 100%; height: 200px; object-fit: cover; border-radius: 8px; }
+.card h3 { font-size: 14px; margin: 8px 0 4px; }
+.card p { font-size: 12px; color: #666; margin: 0; }
+.bad { border: 3px solid red; }
+.good { border: 3px solid green; }
+</style>
+</head>
+<body>
+<h1>🔍 Product Image Verification</h1>
+<p>Check if each image matches its product. <strong>Red border = wrong image!</strong></p>
+<div class="grid" id="grid"></div>
+<script>
+const products = [
+  "P1001 - Classic Cotton T-Shirt - Black",
+  "P1002 - Classic Cotton T-Shirt - White",
+  "P1003 - Slim Fit Denim Jeans",
+  "P1004 - Wireless Bluetooth Headphones",
+  "P1005 - USB-C Fast Charger 65W",
+  "P1006 - Stainless Steel Water Bottle",
+  "P1007 - Leather Crossbody Bag",
+  "P1008 - Running Shoes - Men",
+  "P1009 - Running Shoes - Women",
+  "P1010 - Yoga Mat - Premium",
+  "P1011 - Smart Fitness Watch",
+  "P1012 - Ceramic Coffee Mug Set",
+  "P1013 - Wireless Mouse",
+  "P1014 - Backpack - 25L Travel",
+  "P1015 - Sunglasses - Polarized",
+  "P1016 - Bluetooth Speaker Portable",
+  "P1017 - Cotton Bath Towel Set",
+  "P1018 - Men's Formal Shirt - Blue",
+  "P1019 - Women's Summer Dress",
+  "P1020 - Laptop Sleeve 15-inch"
+];
+
+const grid = document.getElementById('grid');
+products.forEach((name, i) => {
+  const pid = name.split(' ')[0].toLowerCase();
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.innerHTML = \`
+    <img src="/images/\${pid}.jpg" onerror="this.parentElement.className='card bad'; this.src='/images/\${pid}.svg'" />
+    <h3>\${name}</h3>
+    <p>ID: \${pid}</p>
+  \`;
+  grid.appendChild(card);
+});
+</script>
+</body>
+</html>

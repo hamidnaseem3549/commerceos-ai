@@ -23,10 +23,11 @@ function ProductCard({ product, onAdd }: { product: Product; onAdd: (p: Product)
     <div className="glass-card overflow-hidden group">
       <div className="aspect-square relative overflow-hidden bg-gray-50">
         <img
-          src={`/images/${product.product_id.toLowerCase()}.svg`}
+          src={`/images/${product.product_id.toLowerCase()}.jpg`}
           alt={product.product_name}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           loading="lazy"
+          onError={(e) => { (e.target as HTMLImageElement).src = `/images/${product.product_id.toLowerCase()}.svg`; }}
         />
         {product.is_on_sale && (
           <span className="absolute top-3 left-3 bg-orange-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg animate-pulse-slow">SALE</span>
