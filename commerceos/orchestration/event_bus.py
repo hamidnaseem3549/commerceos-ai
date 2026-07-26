@@ -1,7 +1,9 @@
 """In-process event bus — pub/sub for agent collaboration."""
-from typing import Callable
 from collections import defaultdict
-import logging
+from collections.abc import Callable
+from logging import getLogger
+
+_logger = getLogger(__name__)
 
 
 class EventBus:
@@ -23,8 +25,8 @@ class EventBus:
         for handler in self._listeners.get(event_type, []):
             try:
                 handler(data)
-            except Exception as e:
-                logging.error(f"Event handler error for {event_type}: {e}")
+            except Exception as e:  # noqa: BLE001
+                _logger.error("Event handler error for %s: %s", event_type, e)
 
     def remove(self, event_type: str, handler: Callable) -> None:
         self._listeners[event_type] = [h for h in self._listeners[event_type] if h != handler]

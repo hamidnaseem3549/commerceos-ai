@@ -1,11 +1,15 @@
 """Order Management Agent — lifecycle, tracking, cancellation."""
-import re, random, string
-from datetime import datetime, timezone
+import random
+import re
+import string
+from datetime import UTC, datetime
+
 from langchain_groq import ChatGroq
+
+from commerceos.agents.base import AgentResult, BaseAgent
 from commerceos.config import settings
-from commerceos.agents.base import BaseAgent, AgentResult
 from commerceos.database.connection import get_session
-from commerceos.database.models import Order, Customer
+from commerceos.database.models import Order
 
 
 def strip_think_tags(text: str) -> str:
@@ -28,7 +32,7 @@ def _generate_tracking() -> str:
 class OrderAgent(BaseAgent):
     name = "order"
     description = "Manages order lifecycle — status, tracking, cancellation"
-    keywords = ["order status", "track my order", "cancel order", "where is my order",
+    keywords = ["order status", "track my order", "cancel order", "where is my order",  # noqa: RUF012
                 "shipping", "tracking", "order update", "order details"]
 
     def run(self, query: str) -> AgentResult:
@@ -56,7 +60,7 @@ class OrderAgent(BaseAgent):
         if any(w in query.lower() for w in ["cancel", "stop", "void"]):
             if order.status in ["pending", "confirmed"]:
                 order.status = "cancelled"
-                order.updated_at = datetime.now(timezone.utc)
+                order.updated_at = datetime.now(UTC)
                 session.commit()
                 session.close()
                 return AgentResult(answer=f"Order {order_id} cancelled.",
@@ -71,7 +75,7 @@ class OrderAgent(BaseAgent):
         if order.status in ["confirmed", "processing"] and not order.tracking_number:
             order.tracking_number = _generate_tracking()
             order.status = "shipped"
-            order.updated_at = datetime.now(timezone.utc)
+            order.updated_at = datetime.now(UTC)
             session.commit()
 
         context = (f"Order {order.id}: Status={order.status}, Amount=${order.total_amount}, "

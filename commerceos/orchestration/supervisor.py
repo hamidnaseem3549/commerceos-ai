@@ -1,12 +1,14 @@
 """LangGraph Supervisor with AgentRegistry routing + MemorySaver."""
 import re
-from typing import TypedDict, Literal, Annotated
 from operator import add
-from langgraph.graph import StateGraph, END
-from langgraph.checkpoint.memory import MemorySaver
+from typing import Annotated, Literal, TypedDict
+
 from langchain_groq import ChatGroq
-from commerceos.config import settings
+from langgraph.checkpoint.memory import MemorySaver
+from langgraph.graph import END, StateGraph
+
 from commerceos.agents import AgentRegistry
+from commerceos.config import settings
 from commerceos.observability.activity_tracker import track
 
 
@@ -22,7 +24,6 @@ class GraphState(TypedDict):
 
 def supervisor_node(state: GraphState) -> GraphState:
     query = state["user_query"]
-    query_lower = query.lower()
 
     route_match = AgentRegistry.route(query)
     if route_match:
@@ -76,7 +77,7 @@ def _run_agent(state: GraphState, agent_name: str) -> GraphState:
         result = agent.run(state["user_query"])
         track(agent_name.capitalize(), "query", state["user_query"][:80])
         return _record_history(state, result)
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001
         return _error_state(state, f"{agent_name} error: {e}")
 
 

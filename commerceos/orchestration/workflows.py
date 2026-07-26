@@ -1,6 +1,8 @@
 """Event-driven workflow definitions."""
-from commerceos.orchestration.event_bus import event_bus
+from datetime import UTC
+
 from commerceos.observability.activity_tracker import track
+from commerceos.orchestration.event_bus import event_bus
 
 
 def register_event_handlers():
@@ -25,11 +27,12 @@ def register_event_handlers():
                                 source_agent="Workflow"))
                     s.commit()
                     s.close()
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001
                 track("Workflow", "fraud_error", str(e), level="ERROR")
 
         from commerceos.database.connection import get_session
-        from commerceos.database.models import Product, OrderItem, Order as OrderModel
+        from commerceos.database.models import Order as OrderModel
+        from commerceos.database.models import OrderItem, Product
         s = get_session()
         order = s.query(OrderModel).filter(OrderModel.id == order_id).first()
         if order:
@@ -45,8 +48,8 @@ def register_event_handlers():
                                     source_agent="Workflow"))
             if order.status == "pending":
                 order.status = "confirmed"
-                from datetime import datetime, timezone
-                order.updated_at = datetime.now(timezone.utc)
+                from datetime import datetime
+                order.updated_at = datetime.now(UTC)
             s.commit()
         s.close()
 

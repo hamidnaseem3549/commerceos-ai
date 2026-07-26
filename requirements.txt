@@ -25,3 +25,7 @@ python-dotenv>=1.0.0
 
 # ML (required by transformers/sentence-transformers)
 torchvision>=0.20.0
+
+# Linting & test coverage
+ruff>=0.9.0
+pytest-cov>=6.0.0

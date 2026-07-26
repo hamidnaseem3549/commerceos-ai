@@ -1,10 +1,11 @@
 """Fraud detection agent — CrewAI 2-role sequential crew."""
-import re
 import crewai.llms.cache as _crew_cache
+
 _crew_cache.mark_cache_breakpoint = lambda msg: msg
-from crewai import Agent, Task, Crew, Process, LLM
+from crewai import LLM, Agent, Crew, Process, Task
+
+from commerceos.agents.base import AgentResult, BaseAgent
 from commerceos.config import settings
-from commerceos.agents.base import BaseAgent, AgentResult
 from commerceos.mcp.tools import call_tool
 
 groq_llm = LLM(model=f"groq/{settings.fraud_llm_model}", temperature=0.2)
@@ -32,7 +33,7 @@ def format_signal_data(signals: dict) -> str:
 class FraudAgent(BaseAgent):
     name = "fraud"
     description = "Analyzes orders for fraud signals using multi-agent crew"
-    keywords = ["fraud", "suspicious", "scam", "fake", "fraudulent", "check order"]
+    keywords = ["fraud", "suspicious", "scam", "fake", "fraudulent", "check order"]  # noqa: RUF012
 
     def run(self, query: str) -> AgentResult:
         order_id = extract_order_id(query)
@@ -64,7 +65,7 @@ class FraudAgent(BaseAgent):
                     session.add(alert)
                     session.commit()
                     session.close()
-                except Exception:
+                except Exception:  # noqa: BLE001, S110
                     pass
 
             return AgentResult(answer=report, agent="Fraud Detection Agent (CrewAI)",

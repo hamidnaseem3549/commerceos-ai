@@ -2,9 +2,9 @@
 pages/cart.py — Cart view with full checkout and event emission.
 """
 import streamlit as st
-from ui.styling import inject_custom_css
+
 from commerceos.mcp.tools import call_tool
-from commerceos.orchestration.event_bus import event_bus
+from ui.styling import inject_custom_css
 
 st.set_page_config(page_title="Cart & Checkout", page_icon="🛒", layout="wide")
 inject_custom_css()
@@ -94,7 +94,7 @@ with st.form("checkout_form", clear_on_submit=True):
         if not name or not email or not country:
             st.error("Please fill in all checkout fields.")
         else:
-            first_pid = list(st.session_state.cart.keys())[0]
+            first_pid = next(iter(st.session_state.cart.keys()))
             first_qty = st.session_state.cart[first_pid]
 
             order = call_tool("append_order",

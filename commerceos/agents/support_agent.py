@@ -1,10 +1,12 @@
 """Customer support agent — RAG + order lookups."""
 import re
+
 from langchain_groq import ChatGroq
+
+from commerceos.agents.base import AgentResult, BaseAgent
 from commerceos.config import settings
-from commerceos.agents.base import BaseAgent, AgentResult
-from rag.vectorstore_setup import load_vectorstore
 from commerceos.mcp.tools import call_tool
+from rag.vectorstore_setup import load_vectorstore
 
 
 def strip_think_tags(text: str) -> str:
@@ -27,7 +29,7 @@ def extract_email(text: str):
 class SupportAgent(BaseAgent):
     name = "support"
     description = "Handles customer questions about orders, refunds, and returns"
-    keywords = ["order", "refund", "return", "shipping", "cancel", "damaged", "policy",
+    keywords = ["order", "refund", "return", "shipping", "cancel", "damaged", "policy",  # noqa: RUF012
                 "where is my", "track", "delivery", "exchange", "warranty"]
 
     def run(self, query: str) -> AgentResult:
@@ -37,7 +39,6 @@ class SupportAgent(BaseAgent):
 
         order_context = ""
         order_id = extract_order_id(query)
-        email = extract_email(query)
 
         if order_id:
             order = call_tool("get_order_by_id", order_id=order_id)

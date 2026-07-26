@@ -1,5 +1,6 @@
 """AgentRegistry — agents register here, supervisor routes from here."""
 from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -7,7 +8,7 @@ if TYPE_CHECKING:
 
 
 class AgentRegistry:
-    _agents: dict[str, BaseAgent] = {}
+    _agents: dict[str, BaseAgent] = {}  # noqa: RUF012
 
     @classmethod
     def register(cls, agent: BaseAgent) -> None:

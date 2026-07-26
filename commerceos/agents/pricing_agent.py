@@ -1,10 +1,12 @@
 """Pricing Agent — dynamic pricing, sale suggestions."""
 import re
+
 from langchain_groq import ChatGroq
+
+from commerceos.agents.base import AgentResult, BaseAgent
 from commerceos.config import settings
-from commerceos.agents.base import BaseAgent, AgentResult
 from commerceos.database.connection import get_session
-from commerceos.database.models import Product, OrderItem
+from commerceos.database.models import OrderItem, Product
 
 
 def strip_think_tags(text: str) -> str:
@@ -14,7 +16,7 @@ def strip_think_tags(text: str) -> str:
 class PricingAgent(BaseAgent):
     name = "pricing"
     description = "Dynamic pricing, sale analysis, slow-moving inventory"
-    keywords = ["sale", "discount", "deal", "price", "pricing", "promotion",
+    keywords = ["sale", "discount", "deal", "price", "pricing", "promotion",  # noqa: RUF012
                 "cheap", "on sale", "good deal", "any deals"]
 
     def run(self, query: str) -> AgentResult:

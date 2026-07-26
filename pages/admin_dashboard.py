@@ -1,13 +1,15 @@
 """Admin Operations Dashboard — fraud alerts, stock overview, agent activity."""
 import os
+from datetime import UTC, datetime
+
 import streamlit as st
-from datetime import datetime, timezone
-from ui.styling import inject_custom_css
-from ui.components import metric_card, format_uptime
-from commerceos.database.connection import get_session
-from commerceos.database.models import Order, Alert, AgentLog, Product
-from commerceos.mcp.tools import call_tool
+
 from commerceos.agents.pricing_agent import analyze_and_apply_sales
+from commerceos.database.connection import get_session
+from commerceos.database.models import AgentLog, Alert, Order, Product
+from commerceos.mcp.tools import call_tool
+from ui.components import format_uptime, metric_card
+from ui.styling import inject_custom_css
 
 st.set_page_config(page_title="Admin Dashboard", page_icon="⚙️", layout="wide")
 inject_custom_css()
@@ -58,7 +60,7 @@ with col3:
 with col4:
     metric_card("Fraud Alerts", fraud_alerts,
                 delta="🚨 Active" if fraud_alerts > 0 else "")
-st.caption(f"🕐 Uptime: {format_uptime()} | {datetime.now(timezone.utc).strftime('%H:%M:%S')} UTC")
+st.caption(f"🕐 Uptime: {format_uptime()} | {datetime.now(UTC).strftime('%H:%M:%S')} UTC")
 
 st.divider()
 
@@ -91,8 +93,7 @@ low_stock = session.query(Product).filter(
 if low_stock:
     cols = st.columns(3)
     for i, p in enumerate(low_stock):
-        with cols[i % 3]:
-            with st.container(border=True):
+        with cols[i % 3], st.container(border=True):
                 st.markdown(f"**{p.name}**")
                 st.markdown(f"Stock: **{p.stock_quantity}** (threshold: {p.reorder_threshold})")
                 sev = "🔴 CRITICAL" if p.stock_quantity == 0 else "🟡 LOW"

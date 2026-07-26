@@ -1,33 +1,32 @@
 """FastAPI backend for CommerceOS AI — wraps the agent engine in REST endpoints."""
-import sys
-import os
-import json
 import asyncio
-from datetime import datetime, timezone
-from typing import Optional
+import json
+import os
+import sys
 from contextlib import asynccontextmanager
+from datetime import UTC, datetime
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
-from fastapi import FastAPI, Query, HTTPException
+from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from sse_starlette.sse import EventSourceResponse
 
+from commerceos.agents import AgentRegistry
+from commerceos.agents.pricing_agent import analyze_and_apply_sales
+
 # ── CommerceOS imports ──
-from commerceos.config import settings
+from commerceos.database.connection import get_session, init_db
+from commerceos.database.models import AgentLog, Alert, Customer, Order, Product
 from commerceos.mcp.tools import call_tool
 from commerceos.orchestration.supervisor import handle_query
-from commerceos.agents.pricing_agent import analyze_and_apply_sales
-from commerceos.database.connection import get_session, init_db
-from commerceos.database.models import Product, Order, Alert, AgentLog, Customer
-from commerceos.agents import AgentRegistry
+
 
 # ── Startup ──
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     init_db()
-    from commerceos.agents import AgentRegistry
     yield
 
 app = FastAPI(title="CommerceOS AI API", version="0.2.0", lifespan=lifespan)
@@ -64,7 +63,7 @@ class ChatResponse(BaseModel):
 # ══════════════════════════════════════════════════
 
 @app.get("/api/products")
-def get_products(category: Optional[str] = None, search: Optional[str] = None):
+def get_products(category: str | None = None, search: str | None = None):
     """Get all products, optionally filtered."""
     if search:
         products = call_tool("search_products", query=search)
@@ -79,7 +78,7 @@ def get_products(category: Optional[str] = None, search: Optional[str] = None):
 def get_categories():
     """Get all product categories."""
     products = call_tool("get_all_products")
-    cats = sorted(set(p.get("category", "Other") for p in products))
+    cats = sorted({p.get("category", "Other") for p in products})
     return {"categories": cats}
 
 
@@ -245,7 +244,7 @@ def run_pricing_analysis():
 
 @app.get("/api/health")
 def health():
-    return {"status": "ok", "agents": AgentRegistry.list(), "timestamp": str(datetime.now(timezone.utc))}
+    return {"status": "ok", "agents": AgentRegistry.list(), "timestamp": str(datetime.now(UTC))}
 
 
 if __name__ == "__main__":

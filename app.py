@@ -1,7 +1,8 @@
 """app.py — Urban Thread Co. storefront with category filter and product images."""
 import streamlit as st
-from ui.styling import inject_custom_css
+
 from commerceos.mcp.tools import call_tool
+from ui.styling import inject_custom_css
 
 st.set_page_config(page_title="Urban Thread Co.", page_icon="🛍️", layout="wide")
 inject_custom_css()
@@ -44,8 +45,7 @@ if not products:
 else:
     cols = st.columns(4)
     for idx, product in enumerate(products):
-        with cols[idx % 4]:
-            with st.container(border=True):
+        with cols[idx % 4], st.container(border=True):
                 # Product image
                 img_path = f"ui/assets/images/product_{product['product_id'].lower()}.svg"
                 try:
@@ -59,7 +59,7 @@ else:
 
                 # Sale badge
                 if product.get("is_on_sale"):
-                    st.markdown(f'<span style="background:#ff6b35;color:white;padding:0.2rem 0.5rem;border-radius:4px;font-size:0.7rem;font-weight:700;">SALE</span>',
+                    st.markdown('<span style="background:#ff6b35;color:white;padding:0.2rem 0.5rem;border-radius:4px;font-size:0.7rem;font-weight:700;">SALE</span>',
                                 unsafe_allow_html=True)
 
                 st.markdown(f"**{product['product_name']}**")
@@ -79,8 +79,7 @@ else:
                 else:
                     st.markdown(f"<span class='stock-badge in-stock'>{product['stock_quantity']} in stock</span>", unsafe_allow_html=True)
 
-                if product["stock_quantity"] > 0:
-                    if st.button("Add to Cart", key=f"add_{product['product_id']}"):
+                if product["stock_quantity"] > 0 and st.button("Add to Cart", key=f"add_{product['product_id']}"):
                         pid = product["product_id"]
                         st.session_state.cart[pid] = st.session_state.cart.get(pid, 0) + 1
                         st.toast(f"Added {product['product_name']} to cart!")

@@ -14,7 +14,7 @@ class AgentResult(TypedDict):
 class BaseAgent(ABC):
     name: str = ""
     description: str = ""
-    keywords: list[str] = []
+    keywords: list[str] = []  # noqa: RUF012
 
     @abstractmethod
     def run(self, query: str) -> AgentResult:

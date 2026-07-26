@@ -1,8 +1,10 @@
 """Inventory agent — stock queries + auto-alerts."""
 import re
+
 from langchain_groq import ChatGroq
+
+from commerceos.agents.base import AgentResult, BaseAgent
 from commerceos.config import settings
-from commerceos.agents.base import BaseAgent, AgentResult
 from commerceos.mcp.tools import call_tool
 
 
@@ -13,7 +15,7 @@ def strip_think_tags(text: str) -> str:
 class InventoryAgent(BaseAgent):
     name = "inventory"
     description = "Handles stock and product availability questions"
-    keywords = ["stock", "inventory", "available", "restock", "quantity",
+    keywords = ["stock", "inventory", "available", "restock", "quantity",  # noqa: RUF012
                 "in stock", "out of stock", "how many", "do we have",
                 "do you have", "is there", "low stock"]
 

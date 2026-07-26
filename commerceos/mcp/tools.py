@@ -1,8 +1,9 @@
 """MCP Tool Layer — DB-backed data access for all agents."""
-from datetime import timedelta, datetime, timezone
-from commerceos.mcp.registry import register_tool, get_tool
+from datetime import UTC, datetime, timedelta
+
 from commerceos.database.connection import get_session
-from commerceos.database.models import Product, Customer, Order, OrderItem
+from commerceos.database.models import Customer, Order, OrderItem, Product
+from commerceos.mcp.registry import get_tool, register_tool
 
 
 def get_all_products() -> list[dict]:
@@ -148,9 +149,8 @@ def _get_next_order_id() -> str:
         highest = session.query(OrderModel.id).order_by(OrderModel.id.desc()).first()
         if highest and highest[0].startswith("O"):
             num = int(highest[0][1:]) + 1
-            if num > _next_order_num[0]:
-                _next_order_num[0] = num
-    except Exception:
+            _next_order_num[0] = max(_next_order_num[0], num)
+    except Exception:  # noqa: BLE001, S110
         pass
     finally:
         session.close()
@@ -180,7 +180,7 @@ def append_order(customer_name: str, customer_email: str, shipping_country: str,
 
         order_id = _get_next_order_id()
         total = round(product.price * quantity, 2)
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
 
         order = Order(id=order_id, customer_id=customer.id, status="pending",
                       total_amount=total, shipping_address=shipping_country,
@@ -201,11 +201,11 @@ def append_order(customer_name: str, customer_email: str, shipping_country: str,
                     "order_id": order_id, "customer_email": customer_email,
                     "product_id": product_id, "quantity": quantity,
                 })
-            except Exception:
+            except Exception:  # noqa: BLE001, S110
                 pass
 
         return {"order_id": order_id, "product_name": product_name, "total": total}
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001
         session.rollback()
         session.close()
         return {"error": str(e)}
