@@ -1,31 +1,4 @@
 services:
-  # ── FastAPI Backend ──
-  api:
-    build:
-      context: ..
-      dockerfile: backend/Dockerfile
-    ports:
-      - "8000:8000"
-    volumes:
-      - commerceos_data:/app/data
-    env_file:
-      - ../.env
-    command: >
-      sh -c "cd /app && python scripts/seed.py && uvicorn backend.main:app --host 0.0.0.0 --port 8000"
-
-  # ── Next.js Frontend ──
-  frontend:
-    build:
-      context: ../frontend
-      dockerfile: Dockerfile
-    ports:
-      - "3000:3000"
-    environment:
-      - NEXT_PUBLIC_API_URL=http://localhost:8000
-    depends_on:
-      - api
-
-  # ── Streamlit (optional, can remove when frontend is complete) ──
   streamlit:
     build:
       context: ..
@@ -36,10 +9,6 @@ services:
       - commerceos_data:/app/data
     env_file:
       - ../.env
-    profiles:
-      - legacy
-    command: >
-      sh -c "cd /app && streamlit run app.py --server.port=8501 --server.address=0.0.0.0"
 
 volumes:
   commerceos_data:
