@@ -1,8 +1,11 @@
 """Seed the database from CSV source files."""
 import os
+from datetime import UTC, datetime
+
 import pandas as pd
+
 from commerceos.database.connection import get_session, init_db
-from commerceos.database.models import Product, Customer, Order, OrderItem
+from commerceos.database.models import Customer, Order, OrderItem, Product
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_DIR = os.path.dirname(os.path.dirname(CURRENT_DIR))
@@ -65,10 +68,40 @@ def seed_database():
         customer.total_spent = (customer.total_spent or 0) + amount
         order_count += 1
 
+    # ── Demo showcase data ──
+    seed_demo_data(session)
+
     session.commit()
     session.close()
     print(f"  Seeded {order_count} orders.")
     print("Seeding complete.")
+
+
+def seed_demo_data(session):
+    """Seed fraud signals for portfolio demo.
+
+    Adds FraudSignal records for order O2004 so the admin dashboard
+    shows real fraud alerts on first launch.
+    """
+    from commerceos.database.models import FraudSignal
+
+    existing = session.query(FraudSignal).count()
+    if existing == 0:
+        print("Seeding demo fraud signals...")
+        fraud_signals_data = [
+            FraudSignal(order_id="O2004", signal_type="velocity", triggered=True,
+                        checked_at=datetime(2026, 6, 26, 2, 15, tzinfo=UTC)),
+            FraudSignal(order_id="O2004", signal_type="country_mismatch", triggered=True,
+                        checked_at=datetime(2026, 6, 26, 2, 15, tzinfo=UTC)),
+            FraudSignal(order_id="O2004", signal_type="disposable_email", triggered=True,
+                        checked_at=datetime(2026, 6, 26, 2, 15, tzinfo=UTC)),
+            FraudSignal(order_id="O2004", signal_type="new_account_high_value", triggered=True,
+                        checked_at=datetime(2026, 6, 26, 2, 15, tzinfo=UTC)),
+        ]
+        for fs in fraud_signals_data:
+            session.add(fs)
+        session.commit()
+        print("  Seeded demo fraud signals for O2004.")
 
 
 if __name__ == "__main__":

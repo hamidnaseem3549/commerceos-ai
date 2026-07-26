@@ -1,8 +1,10 @@
 """
 pages/AI_Assistant.py — AI chat panel with 5-agent routing.
 """
-import streamlit as st
 import time
+
+import streamlit as st
+
 from ui.styling import inject_custom_css
 
 
@@ -17,6 +19,7 @@ def _prewarm_engine():
     from rag.vectorstore_setup import load_vectorstore
     load_vectorstore()
     from langchain_groq import ChatGroq
+
     from commerceos.config import settings
     llm = ChatGroq(model=settings.llm_model, temperature=0)
     llm.invoke("Say 'ready' in one word.")
@@ -122,7 +125,21 @@ if query_to_run and query_to_run.strip():
 
 # ── Display conversation ──
 if not st.session_state.chat_log:
-    st.info("👋 Ask me anything about orders, inventory, pricing, or fraud detection!")
+    st.markdown("""
+    ### 👋 Welcome to the AI Assistant!
+
+    I can help you with anything related to **Urban Thread Co.** Here are some things to try:
+
+    | Agent | Example Query |
+    |-------|--------------|
+    | 🎧 **Support** | *"Can I return a damaged item from order O2010?"* |
+    | 📦 **Inventory** | *"Do we have the white t-shirt in stock?"* |
+    | 🛡️ **Fraud** | *"Check order O2004 for fraud"* |
+    | 📋 **Order** | *"Where is my order O2001?"* |
+    | 🏷️ **Pricing** | *"Any items on sale right now?"* |
+
+    **Click any example button above** to see the agent in action!
+    """)
 
 for entry in reversed(st.session_state.chat_log):
     agent_name = entry["agent"]

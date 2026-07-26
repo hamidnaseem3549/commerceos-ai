@@ -81,7 +81,18 @@ if fraud_rows:
             f'({alert.created_at.strftime("%b %d, %H:%M") if alert.created_at else ""})</span></div>',
             unsafe_allow_html=True)
 else:
-    st.info("No fraud alerts. System is clear.")
+    st.success("✅ No fraud alerts — system is clear.")
+    with st.expander("ℹ️ How fraud detection works"):
+        st.markdown("""
+        The Fraud Agent checks every order for:
+        - **Velocity** — multiple orders from the same customer in 15 minutes
+        - **Country mismatch** — shipping ≠ billing address
+        - **New account + high value** — account <3 days old, order ≥$100
+        - **Disposable email** — email from a temporary mail service
+
+        An order with **2+ signals** triggers the CrewAI analysis pipeline.
+        Place an order with suspicious details to see it in action.
+        """)
 
 st.divider()
 
@@ -99,7 +110,7 @@ if low_stock:
                 sev = "🔴 CRITICAL" if p.stock_quantity == 0 else "🟡 LOW"
                 st.markdown(f"Severity: {sev}")
 else:
-    st.success("✅ All products adequately stocked.")
+    st.success("✅ All products above reorder threshold.")
 
 st.divider()
 
@@ -116,7 +127,7 @@ if logs:
             f'{log.detail[:120]} <span style="color:#636e72;">({ts})</span></div>',
             unsafe_allow_html=True)
 else:
-    st.info("No agent activity recorded yet.")
+    st.info("🤖 No agent activity yet. Try asking the AI Assistant a question — all agent actions are logged here.")
 
 st.divider()
 
