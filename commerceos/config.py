@@ -1,5 +1,6 @@
 """Central configuration — single source of truth for all settings."""
 import os
+
 from dotenv import load_dotenv
 
 load_dotenv()

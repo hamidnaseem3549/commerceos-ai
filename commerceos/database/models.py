@@ -1,7 +1,16 @@
 """SQLAlchemy ORM models."""
-from datetime import datetime, timezone
-from sqlalchemy import (Column, String, Integer, Float, Boolean, Text,
-                        DateTime, ForeignKey)
+from datetime import UTC, datetime
+
+from sqlalchemy import (
+    Boolean,
+    Column,
+    DateTime,
+    Float,
+    ForeignKey,
+    Integer,
+    String,
+    Text,
+)
 from sqlalchemy.orm import declarative_base, relationship
 
 Base = declarative_base()
@@ -18,7 +27,7 @@ class Product(Base):
     image_url = Column(String, default="")
     is_on_sale = Column(Boolean, default=False)
     sale_price = Column(Float, nullable=True)
-    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    created_at = Column(DateTime, default=lambda: datetime.now(UTC))
 
 
 class Customer(Base):
@@ -29,7 +38,7 @@ class Customer(Base):
     account_age_days = Column(Integer, default=0)
     total_orders = Column(Integer, default=0)
     total_spent = Column(Float, default=0.0)
-    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    created_at = Column(DateTime, default=lambda: datetime.now(UTC))
 
 
 class Order(Base):
@@ -43,9 +52,9 @@ class Order(Base):
     billing_address = Column(String, default="")
     payment_method = Column(String, default="Credit Card")
     notes = Column(Text, nullable=True)
-    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
-    updated_at = Column(DateTime, default=lambda: datetime.now(timezone.utc),
-                        onupdate=lambda: datetime.now(timezone.utc))
+    created_at = Column(DateTime, default=lambda: datetime.now(UTC))
+    updated_at = Column(DateTime, default=lambda: datetime.now(UTC),
+                        onupdate=lambda: datetime.now(UTC))
     customer = relationship("Customer", backref="orders")
     items = relationship("OrderItem", backref="order")
 
@@ -68,7 +77,7 @@ class AgentLog(Base):
     detail = Column(Text, default="")
     level = Column(String, default="INFO")
     query_id = Column(String, nullable=True)
-    timestamp = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    timestamp = Column(DateTime, default=lambda: datetime.now(UTC))
 
 
 class FraudSignal(Base):
@@ -77,7 +86,7 @@ class FraudSignal(Base):
     order_id = Column(String, ForeignKey("orders.id"), nullable=False)
     signal_type = Column(String, nullable=False)
     triggered = Column(Boolean, default=False)
-    checked_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    checked_at = Column(DateTime, default=lambda: datetime.now(UTC))
     analyst_output = Column(Text, nullable=True)
     decision = Column(String, nullable=True)
 
@@ -90,4 +99,4 @@ class Alert(Base):
     message = Column(Text, nullable=False)
     resolved = Column(Boolean, default=False)
     source_agent = Column(String, default="")
-    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    created_at = Column(DateTime, default=lambda: datetime.now(UTC))

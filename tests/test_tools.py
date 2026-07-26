@@ -1,6 +1,13 @@
 """Tests for MCP tool layer."""
-from commerceos.mcp.tools import search_products, get_all_products, get_low_stock_products
-from commerceos.mcp.tools import get_order_by_id, get_fraud_signals, get_product_by_id, get_orders_by_email
+from commerceos.mcp.tools import (
+    get_all_products,
+    get_fraud_signals,
+    get_low_stock_products,
+    get_order_by_id,
+    get_orders_by_email,
+    get_product_by_id,
+    search_products,
+)
 
 
 def test_get_all_products():

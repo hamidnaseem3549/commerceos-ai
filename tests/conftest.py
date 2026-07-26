@@ -1,9 +1,11 @@
 """Shared test fixtures — in-memory SQLite, sample data, mock LLM."""
+from datetime import UTC, datetime, timedelta
+
 import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from commerceos.database.models import Base, Product, Customer, Order, OrderItem
-from datetime import datetime, timezone, timedelta
+
+from commerceos.database.models import Base, Customer, Order, OrderItem, Product
 
 
 @pytest.fixture
@@ -32,7 +34,7 @@ def test_db():
     order = Order(id="O2001", customer_id=1, status="delivered",
                   total_amount=49.99, shipping_address="Pakistan",
                   billing_address="Pakistan", payment_method="Credit Card",
-                  created_at=datetime.now(timezone.utc) - timedelta(days=30))
+                  created_at=datetime.now(UTC) - timedelta(days=30))
     session.add(order)
 
     item = OrderItem(order_id="O2001", product_id="P1003", quantity=1, unit_price=49.99)

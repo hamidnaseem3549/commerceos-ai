@@ -20,9 +20,10 @@ guesses — which is exactly why RAG is used in real production systems.
 """
 
 import os
-from langchain_text_splitters import RecursiveCharacterTextSplitter
+
 from langchain_chroma import Chroma
 from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 # Path setup — works regardless of where the script is run from
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))

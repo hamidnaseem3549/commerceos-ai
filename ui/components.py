@@ -1,6 +1,7 @@
 """Reusable Streamlit UI components."""
+from datetime import UTC, datetime
+
 import streamlit as st
-from datetime import datetime, timezone
 
 
 def metric_card(label: str, value, delta="", help_text=""):
@@ -21,8 +22,8 @@ def status_badge(status: str) -> str:
 
 def format_uptime() -> str:
     if "_startup" not in st.session_state:
-        st.session_state._startup = datetime.now(timezone.utc)
-    delta = datetime.now(timezone.utc) - st.session_state._startup
+        st.session_state._startup = datetime.now(UTC)
+    delta = datetime.now(UTC) - st.session_state._startup
     h, r = divmod(int(delta.total_seconds()), 3600)
     m, s = divmod(r, 60)
     return f"{h}h {m}m {s}s"

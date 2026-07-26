@@ -1,5 +1,6 @@
 """Generate clean, professional SVG product images with category-based icons."""
-import os, sys
+import os
+import sys
 
 OUTPUT_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "frontend", "public", "images")
 os.makedirs(OUTPUT_DIR, exist_ok=True)

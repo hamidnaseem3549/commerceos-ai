@@ -1,9 +1,10 @@
 """Order History page — view past orders and their status."""
 import streamlit as st
-from ui.styling import inject_custom_css
+
 from commerceos.database.connection import get_session
-from commerceos.database.models import Order, OrderItem, Customer, Product, FraudSignal
+from commerceos.database.models import Customer, FraudSignal, Order, OrderItem, Product
 from ui.components import status_badge
+from ui.styling import inject_custom_css
 
 st.set_page_config(page_title="Order History", page_icon="📦", layout="wide")
 inject_custom_css()
