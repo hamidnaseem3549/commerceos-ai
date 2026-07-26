@@ -49,10 +49,14 @@ def supervisor_node(state: GraphState) -> GraphState:
     )
 
     llm = ChatGroq(model=settings.llm_model, temperature=0)
-    response = llm.invoke(prompt)
-    decision = re.sub(r"<think>.*?</think>", "", response.content, flags=re.DOTALL).strip().lower()
-    valid = AgentRegistry.list()
-    state["route"] = decision if decision in valid else "support"
+    try:
+        response = llm.invoke(prompt)
+        decision = re.sub(r"<think>.*?</think>", "", response.content, flags=re.DOTALL).strip().lower()
+        valid = AgentRegistry.list()
+        state["route"] = decision if decision in valid else "support"
+    except Exception as e:  # noqa: BLE001
+        track("Supervisor", "llm_error", f"LLM routing failed: {str(e)[:100]}")
+        state["route"] = "support"  # Safe fallback
     return state
 
 
