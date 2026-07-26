@@ -62,19 +62,19 @@ CommerceOS AI is an **autonomous, event-driven e-commerce platform** where **fiv
 <div align="center">
   <table>
     <tr>
-      <td width="50%"><strong>🏠 Storefront</strong><br/><em>Product grid with real images</em><br/>
-        <img src="https://via.placeholder.com/400x250/e2e8f0/64748b?text=Add+Screenshot" alt="Storefront" width="100%"/>
+      <td width="50%"><strong>🏠 Storefront</strong><br/><em>Browse products with AI-powered recommendations</em><br/>
+        <img src="docs/images/01-homepage.png" alt="Storefront" width="100%"/>
       </td>
       <td width="50%"><strong>🤖 AI Assistant</strong><br/><em>Chat with 5 specialist agents</em><br/>
-        <img src="https://via.placeholder.com/400x250/e2e8f0/64748b?text=Add+Screenshot" alt="AI Chat" width="100%"/>
+        <img src="docs/images/04-ai-welcome.png" alt="AI Assistant Welcome" width="100%"/>
       </td>
     </tr>
     <tr>
-      <td width="50%"><strong>⚙️ Admin Dashboard</strong><br/><em>Fraud alerts & stock overview</em><br/>
-        <img src="https://via.placeholder.com/400x250/e2e8f0/64748b?text=Add+Screenshot" alt="Admin" width="100%"/>
+      <td width="50%"><strong>🛡️ Fraud Detection</strong><br/><em>CrewAI multi-agent fraud analysis in action</em><br/>
+        <img src="docs/images/07-ai-fraud.png" alt="Fraud Agent Analysis" width="100%"/>
       </td>
-      <td width="50%"><strong>🛒 Checkout Flow</strong><br/><em>Cart → Order → Event triggers</em><br/>
-        <img src="https://via.placeholder.com/400x250/e2e8f0/64748b?text=Add+Screenshot" alt="Checkout" width="100%"/>
+      <td width="50%"><strong>⚙️ Admin Dashboard</strong><br/><em>Real-time fraud alerts & stock monitoring</em><br/>
+        <img src="docs/images/03-admin-dashboard.png" alt="Admin Dashboard" width="100%"/>
       </td>
     </tr>
   </table>
