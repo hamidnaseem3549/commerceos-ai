@@ -26,3 +26,7 @@ htmlcov/
 # Superpowers working files
 .superpowers/
 docs/superpowers/
+
+# Project report (local only, not pushed to GitHub)
+docs/CommerceOS_AI_Project_Report.pdf
+scripts/generate_pdf.py
