@@ -1,9 +1,12 @@
 """Fraud detection agent — CrewAI 2-role sequential crew."""
 import logging
 
-import crewai.llms.cache as _crew_cache
+try:
+    import crewai.llms.cache as _crew_cache
+    _crew_cache.mark_cache_breakpoint = lambda msg: msg
+except ImportError:
+    pass
 
-_crew_cache.mark_cache_breakpoint = lambda msg: msg
 from crewai import LLM, Agent, Crew, Process, Task
 
 from commerceos.agents.base import AgentResult, BaseAgent
