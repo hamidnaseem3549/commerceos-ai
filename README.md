@@ -355,11 +355,10 @@ commerceos-ai/
 
 ---
 
-## 🔒 Security
+## 👨‍💻 Author
 
-- **API Keys** — Stored in `.env` (gitignored), never committed
-- **Admin Access** — Via `ADMIN_PASSWORD` env var, no hardcoded defaults
-- **Data** — Fictional customers only, no real PII
+**Hamid Naseem** — Aspiring AI Engineer  
+[GitHub](https://github.com/hamidnaseem3549)
 
 ---
 
