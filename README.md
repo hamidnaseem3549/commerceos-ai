@@ -96,13 +96,6 @@ The same order is sent to the **Fraud Agent** for security analysis. The **CrewA
   <img src="docs/images/06-agent-fraud.png" alt="Fraud Agent - CrewAI Analysis" width="80%"/>
 </p>
 
-#### 🎯 All 5 Agents — One Seamless Conversation
-The complete conversation shows the LangGraph supervisor seamlessly switching between all 5 specialist agents based on customer intent.
-
-<p align="center">
-  <img src="docs/images/07-all-agents.png" alt="All Five Agents" width="80%"/>
-</p>
-
 ---
 
 ### ⚙️ 3. Admin Dashboard — Real-Time Operations
