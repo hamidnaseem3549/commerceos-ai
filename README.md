@@ -358,7 +358,7 @@ commerceos-ai/
 ## 👨‍💻 Author
 
 **Hamid Naseem** — Aspiring AI Engineer  
-[GitHub](https://github.com/hamidnaseem3549) · [LinkedIn](https://linkedin.com/in/hamidnaseem3549)
+[GitHub](https://github.com/hamidnaseem3549) · [LinkedIn](www.linkedin.com/in/hamid-naseem-354h)
 
 ---
 
