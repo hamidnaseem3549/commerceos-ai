@@ -53,7 +53,7 @@ Watch how all 5 agents collaborate through a real customer conversation:
 A fully functional e-commerce store with real product photography, category filters, and AI-powered recommendations.
 
 <p align="center">
-  <img src="docs/images/01-storefront.png" alt="Storefront" width="90%"/>
+  <img src="docs/images/02-storefront-full.png" alt="Storefront" width="90%"/>
 </p>
 
 ---
