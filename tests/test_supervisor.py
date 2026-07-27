@@ -1,4 +1,8 @@
 """Tests for the LangGraph supervisor end-to-end."""
+import os
+
+import pytest
+
 from commerceos.orchestration.supervisor import handle_query
 
 
@@ -13,6 +17,7 @@ def test_supervisor_handles_whitespace_query():
     assert result["agent_name"] == "System"
 
 
+@pytest.mark.skipif(not os.environ.get("GROQ_API_KEY"), reason="GROQ_API_KEY not set")
 def test_supervisor_handles_support_query():
     result = handle_query("What is your return policy?")
     assert result["agent_name"] != "System"
@@ -46,6 +51,5 @@ def test_supervisor_preserves_history():
 def test_supervisor_different_threads_independent():
     r1 = handle_query("Check stock", thread_id="thread-a")
     r2 = handle_query("Check fraud", thread_id="thread-b")
-    # Different threads should not interfere
     assert r1["route"] in ["inventory", "support"]
     assert r2["route"] in ["fraud", "support"]
