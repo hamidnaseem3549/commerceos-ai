@@ -49,7 +49,16 @@ CommerceOS AI is an **autonomous, event-driven e-commerce platform** where **fiv
 
 Watch how all 5 agents collaborate through a real customer conversation:
 
-### 🤖 AI Assistant — Where the Magic Happens
+### 🏠 1. The Storefront
+A fully functional e-commerce store with real product photography, category filters, and AI-powered recommendations.
+
+<p align="center">
+  <img src="docs/images/01-storefront-full.png" alt="Storefront" width="90%"/>
+</p>
+
+---
+
+### 🤖 2. AI Assistant — Where the Magic Happens
 The **AI Assistant** is the heart of the system — a LangGraph supervisor routes each query to the right specialist agent automatically.
 
 #### 🎧 Customer Support — Store Info & Orders
@@ -96,7 +105,7 @@ The complete conversation shows the LangGraph supervisor seamlessly switching be
 
 ---
 
-### ⚙️ 2. Admin Dashboard — Real-Time Operations
+### ⚙️ 3. Admin Dashboard — Real-Time Operations
 The operations dashboard shows live fraud alerts, stock levels, and a complete audit trail of all agent activity.
 
 <p align="center">
@@ -105,7 +114,7 @@ The operations dashboard shows live fraud alerts, stock levels, and a complete a
 
 ---
 
-### 📖 3. API Documentation
+### 📖 4. API Documentation
 Every agent capability is also exposed through a REST API with full Swagger documentation.
 
 <p align="center">
