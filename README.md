@@ -277,7 +277,7 @@ Visit **http://localhost:3000**
 
 **Terminal 1 — Backend:**
 ```bash
-git clone https://github.com/yourusername/commerceos-ai.git
+git clone https://github.com/hamidnaseem3549/commerceos-ai.git
 cd commerceos-ai
 python -m venv venv && source venv/bin/activate
 pip install -r requirements.txt
@@ -358,7 +358,7 @@ commerceos-ai/
 ## 👨‍💻 Author
 
 **Hamid Naseem** — Aspiring AI Engineer  
-[GitHub](https://github.com/hamidnaseem3549)
+[GitHub](https://github.com/hamidnaseem3549) · [LinkedIn](https://linkedin.com/in/hamidnaseem3549)
 
 ---
 
@@ -374,7 +374,7 @@ MIT
   </p>
   <p>
     <a href="#-overview">Overview</a> ·
-    <a href="#-demo-preview">Demo</a> ·
+    <a href="#-see-it-in-action">Demo</a> ·
     <a href="#-system-architecture">Architecture</a> ·
     <a href="#-the-five-agents">Agents</a> ·
     <a href="#-technology-deep-dive">Tech Deep Dive</a> ·
