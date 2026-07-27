@@ -12,7 +12,6 @@
     <img src="https://img.shields.io/badge/Next.js-14.2-%23000000?logo=next.js&logoColor=white" alt="Next.js"/>
     <img src="https://img.shields.io/badge/Streamlit-1.40-%23FF4B4B?logo=streamlit&logoColor=white" alt="Streamlit"/>
     <br/>
-    <img src="https://img.shields.io/badge/CI-passing-%2328a745" alt="CI passing"/>
     <img src="https://img.shields.io/badge/coverage-80%25-%23a0c334" alt="Coverage 80%"/>
     <img src="https://img.shields.io/badge/code%20style-ruff-%23D32F2F" alt="Ruff"/>
     <img src="https://img.shields.io/badge/license-MIT-%23blue" alt="MIT License"/>
