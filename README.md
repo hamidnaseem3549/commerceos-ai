@@ -49,72 +49,63 @@ CommerceOS AI is an **autonomous, event-driven e-commerce platform** where **fiv
 
 Watch how all 5 agents collaborate through a real customer conversation:
 
-### 🏠 1. The Storefront
-A fully functional e-commerce store with real product photography, category filters, and AI-powered recommendations.
-
-<p align="center">
-  <img src="docs/images/02-storefront-full.png" alt="Storefront" width="90%"/>
-</p>
-
----
-
-### 🤖 2. AI Assistant — Where the Magic Happens
+### 🤖 AI Assistant — Where the Magic Happens
 The **AI Assistant** is the heart of the system — a LangGraph supervisor routes each query to the right specialist agent automatically.
 
-#### 📋 Order Agent — Track My Order
-The customer asks about their order. The supervisor detects it's an **Order** query and routes accordingly.
+#### 🎧 Customer Support — Store Info & Orders
+The customer asks about the store, how to place orders, and delivery tracking. The **Support Agent** uses **RAG (ChromaDB)** to provide accurate, policy-grounded responses.
 
 <p align="center">
-  <img src="docs/images/03-agent-order.png" alt="Order Agent" width="80%"/>
+  <img src="docs/images/02-agent-support.png" alt="Support Agent" width="80%"/>
 </p>
 
-#### 📦 Inventory Agent — Check Stock
-The customer asks about product availability. The **Inventory Agent** queries the live database.
+#### 📦 Inventory Agent — Check Product Availability
+The customer asks about specific products in stock. The **Inventory Agent** queries the live database and responds with real-time stock levels.
 
 <p align="center">
-  <img src="docs/images/04-agent-inventory.png" alt="Inventory Agent" width="80%"/>
+  <img src="docs/images/03-agent-inventory.png" alt="Inventory Agent" width="80%"/>
 </p>
 
-#### 🏷️ Pricing Agent — Find Deals
-The customer looks for sales. The **Pricing Agent** analyzes current promotions and slow-moving inventory.
+#### 🏷️ Pricing Agent — Find Deals & Sales
+The customer looks for ongoing promotions. The **Pricing Agent** analyzes current sales and slow-moving inventory to suggest the best deals.
 
 <p align="center">
-  <img src="docs/images/05-agent-pricing.png" alt="Pricing Agent" width="80%"/>
+  <img src="docs/images/04-agent-pricing.png" alt="Pricing Agent" width="80%"/>
 </p>
 
-#### 🎧 Support Agent — Returns & Policies
-The customer needs help with a return. The **Support Agent** uses **RAG (ChromaDB)** to find the right policy and craft a response grounded in actual documents.
+#### 📋 Order Management — Track a Real Order
+An order is placed through the storefront, then the **Order Agent** is asked to check its status — showing real order lifecycle management with tracking.
 
 <p align="center">
-  <img src="docs/images/06-agent-support.png" alt="Support Agent" width="80%"/>
+  <img src="docs/images/05-agent-order.png" alt="Order Agent" width="80%"/>
 </p>
 
 #### 🛡️ Fraud Agent — CrewAI Multi-Agent Analysis ⭐
-The customer requests a fraud check. The **Fraud Agent** kicks off a **CrewAI sequential crew** — a Signal Analyst interprets the raw data, then a Risk Adjudicator makes the final decision.
+The same order is sent to the **Fraud Agent** for security analysis. The **CrewAI sequential crew** (Signal Analyst → Risk Adjudicator) debates the signals and produces a risk decision.
 
 <p align="center">
-  <img src="docs/images/07-agent-fraud-crewai.png" alt="Fraud Agent - CrewAI Analysis" width="80%"/>
+  <img src="docs/images/06-agent-fraud.png" alt="Fraud Agent - CrewAI Analysis" width="80%"/>
 </p>
 
 #### 🎯 All 5 Agents — One Seamless Conversation
 The complete conversation shows the LangGraph supervisor seamlessly switching between all 5 specialist agents based on customer intent.
 
 <p align="center">
-  <img src="docs/images/08-all-five-agents.png" alt="All Five Agents" width="80%"/>
+  <img src="docs/images/07-all-agents.png" alt="All Five Agents" width="80%"/>
 </p>
 
 ---
 
-### ⚙️ 3. Admin Dashboard — Real-Time Operations
+### ⚙️ 2. Admin Dashboard — Real-Time Operations
 The operations dashboard shows live fraud alerts, stock levels, and a complete audit trail of all agent activity.
 
 <p align="center">
-  <img src="docs/images/02-admin-dashboard.png" alt="Admin Dashboard" width="90%"/>
+  <img src="docs/images/08-admin-dashboard.png" alt="Admin Dashboard" width="90%"/>
 </p>
 
 ---
 
-### 📖 4. API Documentation
+### 📖 3. API Documentation
 Every agent capability is also exposed through a REST API with full Swagger documentation.
 
 <p align="center">
